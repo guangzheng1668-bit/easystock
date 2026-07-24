@@ -83,28 +83,23 @@
         .text-up { color: #00b060; font-weight: 700; }
         .text-down { color: #ff3b30; font-weight: 700; }
 
-        /* 🏷️ 自选股市场分类标签 (Market Filters) */
-        /* 🏷️ 手机端横向滑动标签栏容器 */
+        /* 📱 手机端横向滑动标签栏容器 (方案二) */
         .market-tabs-scroll-container {
             width: 100%;
             overflow-x: auto;
             white-space: nowrap;
             margin-bottom: 12px;
-            -webkit-overflow-scrolling: touch; /* 提升 iOS 上的流畅滑动感 */
-            scrollbar-width: none; /* 隐藏 Firefox 滚动条 */
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
-
-        /* 隐藏 Chrome/Safari 滚动条，保持界面干净 */
         .market-tabs-scroll-container::-webkit-scrollbar {
             display: none;
         }
-
         .market-tabs {
             display: inline-flex;
             gap: 8px;
             padding-bottom: 2px;
         }
-
         .market-tab-btn {
             background: var(--box-bg);
             border: 1px solid var(--border-color);
@@ -114,10 +109,9 @@
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
-            flex-shrink: 0; /* 保证标签不被挤压变形 */
+            flex-shrink: 0;
             transition: all 0.2s ease;
         }
-
         .market-tab-btn.active {
             background: #1a73e8;
             color: white;
@@ -148,7 +142,6 @@
         .watchlist-card .stock-price { font-size: 13px; font-weight: 700; margin-top: 2px; }
         .watchlist-card .stock-change { font-size: 11px; font-weight: 700; }
         
-        /* Sparkline 走势线 */
         .sparkline-svg { width: 100%; height: 26px; margin-top: 6px; overflow: visible; }
 
         .empty-slot { border: 2px dashed var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-sub); font-size: 12px; min-height: 110px; background: var(--box-bg); cursor: pointer; gap: 4px; }
@@ -191,7 +184,7 @@
 
     <div class="app-container">
         
-        <!-- 头部 -->
+        <!-- 头部搜索区 -->
         <div class="header-card">
             <button class="theme-toggle-btn" id="themeBtn" onclick="toggleDarkMode()">🌙 切换黑夜</button>
             <div class="logo-container">
@@ -204,7 +197,7 @@
             </div>
         </div>
 
-        <!-- 模拟资金账户 -->
+        <!-- 模拟资金账户卡片 -->
         <div class="portfolio-card">
             <div class="port-header">
                 <span>🎮 账户总资产 (统一折算)</span>
@@ -236,7 +229,7 @@
             </div>
         </div>
 
-        <!-- 持仓与交易历史 -->
+        <!-- 持仓与交易历史管理卡片 -->
         <div class="card">
             <div class="card-title">
                 <span id="currentViewTitle">📊 我的持仓明细</span>
@@ -288,25 +281,28 @@
             </div>
         </div>
 
-        <!-- 6小格自选股看板 (支持多市场筛选 & Mini Sparkline 走势图) -->
+        <!-- 自选股看板 (支持横向滑动市场分类 Tabs + 走势图) -->
         <div class="card">
             <div class="card-title">
                 <span>我的自选股 (Watchlist)</span>
                 <button class="menu-btn" style="padding:4px 8px; font-size:11px;" onclick="addCurrentToWatchlist()">+ 添加当前股票</button>
             </div>
 
-            <!-- 市场分类标签（优化为横向滑动） -->
-        <div class="market-tabs-scroll-container">
-            <div class="market-tabs">
-                <button class="market-tab-btn active" onclick="filterMarket('ALL', this)">全部</button>
-                <button class="market-tab-btn" onclick="filterMarket('AX', this)">🇦🇺 澳股</button>
-                <button class="market-tab-btn" onclick="filterMarket('US', this)">🇺🇸 美股</button>
-                <button class="market-tab-btn" onclick="filterMarket('HK', this)">🇭🇰 港股</button>
-                <button class="market-tab-btn" onclick="filterMarket('CN', this)">🇨🇳 沪深</button>
+            <!-- 横向滑动分类栏 -->
+            <div class="market-tabs-scroll-container">
+                <div class="market-tabs">
+                    <button class="market-tab-btn active" onclick="filterMarket('ALL', this)">全部</button>
+                    <button class="market-tab-btn" onclick="filterMarket('AX', this)">🇦🇺 澳股</button>
+                    <button class="market-tab-btn" onclick="filterMarket('US', this)">🇺🇸 美股</button>
+                    <button class="market-tab-btn" onclick="filterMarket('HK', this)">🇭🇰 港股</button>
+                    <button class="market-tab-btn" onclick="filterMarket('CN', this)">🇨🇳 沪深</button>
+                </div>
             </div>
+
+            <div id="watchlistGrid" class="watchlist-grid-6"></div>
         </div>
 
-        <!-- 分析与模拟交易区 -->
+        <!-- 股票详情与决策分析卡片 -->
         <div class="card" id="detailCard" style="display: none;">
             <div class="detail-header">
                 <div class="detail-title">
@@ -319,8 +315,10 @@
                 </div>
             </div>
 
+            <!-- K线图 -->
             <div id="chartContainer"></div>
 
+            <!-- 模拟买卖交易盒 -->
             <div class="trade-box">
                 <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px; color:var(--text-main);">💡 模拟买卖决策</div>
                 <div class="trade-inputs">
@@ -333,6 +331,7 @@
                     <button class="btn-sell" onclick="executeTrade('SELL')">模拟卖出</button>
                 </div>
 
+                <!-- 止盈止损自动卖出策略 -->
                 <div class="strategy-box">
                     <div style="font-weight: 700; color: #15803d; margin-bottom: 6px;">🛡️ 止盈止损自动卖出策略 (Take Profit / Stop Loss)</div>
                     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
@@ -344,11 +343,13 @@
                 </div>
             </div>
 
+            <!-- AI 智能诊断 -->
             <div class="ai-card">
                 <div style="font-size: 13px; font-weight: 700; color: #1a73e8; margin-bottom: 4px;">🤖 Gemini 智能诊断</div>
                 <p id="dispAiAnalysis" style="font-size: 13px; color: var(--text-main); line-height: 1.4;"></p>
             </div>
 
+            <!-- 新闻专区 -->
             <div class="news-section">
                 <div class="news-title">
                     <span>📰 核心财经新闻 (Filtered News)</span>
@@ -360,7 +361,7 @@
             </div>
         </div>
 
-        <!-- 手机端安装提示与二维码分享区 -->
+        <!-- 手机端扫码区 -->
         <div class="share-footer">
             <div style="font-size: 14px; font-weight: 700; color: var(--text-main);">📱 扫码在手机上体验全屏 App</div>
             <p style="font-size: 12px; color: var(--text-sub);">使用微信或浏览器扫描上方二维码，点击“添加到主屏幕”即可安装体验！</p>
@@ -477,7 +478,6 @@
             const colorClass = isUp ? 'text-up' : 'text-down';
             const strokeColor = isUp ? '#00b060' : '#ff3b30';
 
-            // 绘制 Mini Sparkline SVG
             const quotes = data.quotes;
             let svgPath = '';
             if (quotes && quotes.length > 1) {
@@ -737,7 +737,7 @@
                 checkAutoStrategy(symbol, price);
                 renderPortfolioTable();
                 
-                document.getElementById('dispAiAnalysis').innerText = `【AI诊断】${symbol} 当前价格 ${price.toFixed(2)}。自选股 Mini Sparkline 和市场标签筛选已完美就绪！`;
+                document.getElementById('dispAiAnalysis').innerText = `【AI诊断】${symbol} 当前价格 ${price.toFixed(2)}。自选股 Mini Sparkline 和横向滑动市场标签已完美就绪！`;
 
                 fetchFilteredStockNews(symbol, meta.shortName || symbol);
 
