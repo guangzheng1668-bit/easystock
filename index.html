@@ -44,9 +44,8 @@
         
         /* 品牌头部 */
         .header-card { background: var(--card-bg); border-radius: 20px; padding: 18px 20px; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.04); position: relative; }
-        .logo-container { display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+        .logo-container { display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
         .logo-icon { background: linear-gradient(135deg, #1a73e8, #34a853); color: white; font-weight: 900; padding: 6px 14px; border-radius: 12px; font-size: 22px; box-shadow: 0 2px 8px rgba(26,115,232,0.3); }
-        .logo-sub { font-size: 12px; color: var(--text-sub); margin-bottom: 14px; }
         
         .theme-toggle-btn { position: absolute; top: 16px; right: 16px; background: var(--box-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; }
 
@@ -68,6 +67,19 @@
         .card { background: var(--card-bg); border-radius: 20px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
         .card-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         
+        /* ⚙️ 下拉菜单样式 (Roll Down Menu) */
+        .dropdown-menu-container { position: relative; display: inline-block; }
+        .menu-btn { background: #1a73e8; color: white; border: none; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(26,115,232,0.2); }
+        .menu-btn:hover { background: #1557b0; }
+        
+        .dropdown-content { display: none; position: absolute; right: 0; top: 110%; background-color: var(--card-bg); min-width: 150px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border-radius: 12px; border: 1px solid var(--border-color); z-index: 100; overflow: hidden; }
+        .dropdown-content.show { display: block; animation: fadeIn 0.2s ease; }
+        .dropdown-item { color: var(--text-main); padding: 10px 14px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border-color); }
+        .dropdown-item:last-child { border-bottom: none; }
+        .dropdown-item:hover { background-color: var(--box-bg); color: #1a73e8; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
         /* 表格与功能按键 */
         .position-table-wrap { overflow-x: auto; }
         .position-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
@@ -75,13 +87,6 @@
         .position-table td { padding: 12px 6px; border-bottom: 1px solid var(--border-color); font-weight: 600; color: var(--text-main); }
         .text-up { color: #00b060; font-weight: 700; }
         .text-down { color: #ff3b30; font-weight: 700; }
-
-        .btn-group { display: flex; gap: 6px; align-items: center; }
-        .action-btn-sm { background: var(--box-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
-        .action-btn-sm:hover { border-color: #1a73e8; color: #1a73e8; }
-        .export-btn { background: #0284c7; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
-        .tab-btn { background: var(--box-bg); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-sub); }
-        .tab-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
 
         /* 自选股布局 */
         .watchlist-grid-6 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -157,7 +162,6 @@
             <div class="logo-container">
                 <span class="logo-icon">易</span>
             </div>
-            <div class="logo-sub">导出报告 · 暗黑模式 · 备份与恢复 · 止盈止损自动交易</div>
             
             <div class="search-box">
                 <input type="text" id="searchInput" class="search-input" value="CBA.AX" placeholder="输入代码 (如 CBA.AX, AAPL, NVDA)...">
@@ -197,21 +201,25 @@
             </div>
         </div>
 
-        <!-- 持仓与交易历史 -->
+        <!-- 持仓与交易历史（带 Roll Down 下拉菜单） -->
         <div class="card">
             <div class="card-title">
-                <div style="display: flex; gap: 8px;">
-                    <button id="tabHoldingsBtn" class="tab-btn active" onclick="switchTab('holdings')">📊 我的持仓明细</button>
-                    <button id="tabHistoryBtn" class="tab-btn" onclick="switchTab('history')">📜 交易历史日志</button>
-                </div>
+                <span id="currentViewTitle">📊 我的持仓明细</span>
                 
-                <!-- 快捷工具按钮区：包含数据备份与还原 -->
-                <div class="btn-group">
-                    <button class="action-btn-sm" onclick="backupDataJSON()" title="导出备份到本地">💾 备份数据</button>
-                    <button class="action-btn-sm" onclick="document.getElementById('importFileInput').click()" title="导入本地 JSON 还原数据">📤 还原</button>
-                    <input type="file" id="importFileInput" style="display:none" accept=".json" onchange="restoreDataJSON(event)">
-                    <button class="export-btn" onclick="exportReportCSV()">📥 导出 CSV 报告</button>
+                <!-- ⚙️ 资产与数据管理 Roll Down Menu -->
+                <div class="dropdown-menu-container">
+                    <button class="menu-btn" onclick="toggleMenu(event)">
+                        ⚙️ 管理与功能 ▾
+                    </button>
+                    <div class="dropdown-content" id="dropdownMenu">
+                        <div class="dropdown-item" onclick="selectMenuView('holdings')">📊 持仓明细</div>
+                        <div class="dropdown-item" onclick="selectMenuView('history')">📜 交易日志</div>
+                        <div class="dropdown-item" onclick="backupDataJSON()">💾 备份数据</div>
+                        <div class="dropdown-item" onclick="document.getElementById('importFileInput').click()">📤 还原数据</div>
+                        <div class="dropdown-item" onclick="exportReportCSV()">📥 导出 CSV</div>
+                    </div>
                 </div>
+                <input type="file" id="importFileInput" style="display:none" accept=".json" onchange="restoreDataJSON(event)">
             </div>
 
             <div id="viewHoldings" class="position-table-wrap">
@@ -341,7 +349,31 @@
             fetchStockData('CBA.AX');
             refreshAllHoldingsPrices();
             generateQRCode();
+
+            // 点击空白处自动关闭 Roll Down 菜单
+            window.addEventListener('click', function(e) {
+                if (!e.target.matches('.menu-btn')) {
+                    const menu = document.getElementById('dropdownMenu');
+                    if (menu && menu.classList.contains('show')) {
+                        menu.classList.remove('show');
+                    }
+                }
+            });
         };
+
+        function toggleMenu(event) {
+            event.stopPropagation();
+            document.getElementById('dropdownMenu').classList.toggle('show');
+        }
+
+        function selectMenuView(type) {
+            document.getElementById('dropdownMenu').classList.remove('show');
+            if (type === 'holdings') {
+                switchTab('holdings');
+            } else if (type === 'history') {
+                switchTab('history');
+            }
+        }
 
         function toggleDarkMode() {
             isDarkMode = !isDarkMode;
@@ -363,6 +395,7 @@
 
         /* 💾 备份与 📤 还原 JSON 功能 */
         function backupDataJSON() {
+            document.getElementById('dropdownMenu').classList.remove('show');
             const backupObj = {
                 version: "v1.0",
                 exportTime: new Date().toISOString(),
@@ -382,6 +415,7 @@
         }
 
         function restoreDataJSON(event) {
+            document.getElementById('dropdownMenu').classList.remove('show');
             const fileReader = new FileReader();
             fileReader.onload = function(e) {
                 try {
@@ -411,22 +445,22 @@
 
         function switchTab(tab) {
             currentActiveTab = tab;
+            const titleEl = document.getElementById('currentViewTitle');
             if (tab === 'holdings') {
                 document.getElementById('viewHoldings').style.display = 'block';
                 document.getElementById('viewHistory').style.display = 'none';
-                document.getElementById('tabHoldingsBtn').classList.add('active');
-                document.getElementById('tabHistoryBtn').classList.remove('active');
+                titleEl.innerText = '📊 我的持仓明细';
                 renderPortfolioTable();
             } else {
                 document.getElementById('viewHoldings').style.display = 'none';
                 document.getElementById('viewHistory').style.display = 'block';
-                document.getElementById('tabHoldingsBtn').classList.remove('active');
-                document.getElementById('tabHistoryBtn').classList.add('active');
+                titleEl.innerText = '📜 交易历史日志';
                 renderHistoryTable();
             }
         }
 
         function exportReportCSV() {
+            document.getElementById('dropdownMenu').classList.remove('show');
             let csvContent = "\uFEFF"; // UTF-8 BOM 防 Excel 乱码
 
             if (currentActiveTab === 'holdings') {
@@ -546,7 +580,7 @@
                 checkAutoStrategy(symbol, price);
                 renderPortfolioTable();
                 
-                document.getElementById('dispAiAnalysis').innerText = `【AI分析】${symbol} 当前价格 ${price.toFixed(2)}。极致黑夜模式与备份功能已就绪。`;
+                document.getElementById('dispAiAnalysis').innerText = `【AI分析】${symbol} 当前价格 ${price.toFixed(2)}。下拉菜单整合与极简界面已就绪。`;
 
                 fetchFilteredStockNews(symbol, meta.shortName || symbol);
 
