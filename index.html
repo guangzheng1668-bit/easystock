@@ -84,9 +84,45 @@
         .text-down { color: #ff3b30; font-weight: 700; }
 
         /* 🏷️ 自选股市场分类标签 (Market Filters) */
-        .market-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-        .market-tab-btn { background: var(--box-bg); border: 1px solid var(--border-color); color: var(--text-sub); padding: 4px 10px; border-radius: 14px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
-        .market-tab-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+        /* 🏷️ 手机端横向滑动标签栏容器 */
+        .market-tabs-scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-bottom: 12px;
+            -webkit-overflow-scrolling: touch; /* 提升 iOS 上的流畅滑动感 */
+            scrollbar-width: none; /* 隐藏 Firefox 滚动条 */
+        }
+
+        /* 隐藏 Chrome/Safari 滚动条，保持界面干净 */
+        .market-tabs-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .market-tabs {
+            display: inline-flex;
+            gap: 8px;
+            padding-bottom: 2px;
+        }
+
+        .market-tab-btn {
+            background: var(--box-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            flex-shrink: 0; /* 保证标签不被挤压变形 */
+            transition: all 0.2s ease;
+        }
+
+        .market-tab-btn.active {
+            background: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
 
         /* 自选股 6格高级卡片与 Mini Sparkline SVG */
         .watchlist-grid-6 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
@@ -259,7 +295,8 @@
                 <button class="menu-btn" style="padding:4px 8px; font-size:11px;" onclick="addCurrentToWatchlist()">+ 添加当前股票</button>
             </div>
 
-            <!-- 市场分类标签 -->
+            <!-- 市场分类标签（优化为横向滑动） -->
+        <div class="market-tabs-scroll-container">
             <div class="market-tabs">
                 <button class="market-tab-btn active" onclick="filterMarket('ALL', this)">全部</button>
                 <button class="market-tab-btn" onclick="filterMarket('AX', this)">🇦🇺 澳股</button>
@@ -267,8 +304,6 @@
                 <button class="market-tab-btn" onclick="filterMarket('HK', this)">🇭🇰 港股</button>
                 <button class="market-tab-btn" onclick="filterMarket('CN', this)">🇨🇳 沪深</button>
             </div>
-
-            <div id="watchlistGrid" class="watchlist-grid-6"></div>
         </div>
 
         <!-- 分析与模拟交易区 -->
