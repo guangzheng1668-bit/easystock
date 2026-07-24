@@ -27,7 +27,6 @@
             --box-bg: #f8fafc;
         }
 
-        /* 黑夜模式变量覆盖 */
         body.dark-mode {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
@@ -42,7 +41,6 @@
         body { background-color: var(--bg-color); color: var(--text-main); padding: 16px; display: flex; justify-content: center; min-height: 100vh; }
         .app-container { width: 100%; max-width: 850px; display: flex; flex-direction: column; gap: 16px; }
         
-        /* 品牌头部 */
         .header-card { background: var(--card-bg); border-radius: 20px; padding: 18px 20px; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.04); position: relative; }
         .logo-container { display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
         .logo-icon { background: linear-gradient(135deg, #1a73e8, #34a853); color: white; font-weight: 900; padding: 6px 14px; border-radius: 12px; font-size: 22px; box-shadow: 0 2px 8px rgba(26,115,232,0.3); }
@@ -54,7 +52,6 @@
         .search-input:focus { border-color: #1a73e8; background: var(--card-bg); }
         .search-btn { background: #1a73e8; color: white; border: none; padding: 0 22px; border-radius: 30px; cursor: pointer; font-size: 14px; font-weight: 600; }
 
-        /* 模拟资金账户 */
         .portfolio-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; border-radius: 20px; padding: 20px; box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
         .port-header { font-size: 13px; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .port-balance { font-size: 28px; font-weight: 800; color: #f8fafc; margin-bottom: 12px; }
@@ -67,7 +64,6 @@
         .card { background: var(--card-bg); border-radius: 20px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
         .card-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--text-main); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         
-        /* ⚙️ 下拉菜单样式 (Roll Down Menu) */
         .dropdown-menu-container { position: relative; display: inline-block; }
         .menu-btn { background: #1a73e8; color: white; border: none; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(26,115,232,0.2); }
         .menu-btn:hover { background: #1557b0; }
@@ -80,7 +76,6 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 表格与功能按键 */
         .position-table-wrap { overflow-x: auto; }
         .position-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
         .position-table th { color: var(--text-sub); font-weight: 600; padding: 8px 6px; border-bottom: 1px solid var(--border-color); font-size: 12px; }
@@ -88,7 +83,12 @@
         .text-up { color: #00b060; font-weight: 700; }
         .text-down { color: #ff3b30; font-weight: 700; }
 
-        /* 自选股布局 */
+        /* 🏷️ 自选股市场分类标签 (Market Filters) */
+        .market-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+        .market-tab-btn { background: var(--box-bg); border: 1px solid var(--border-color); color: var(--text-sub); padding: 4px 10px; border-radius: 14px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+        .market-tab-btn.active { background: #1a73e8; color: white; border-color: #1a73e8; }
+
+        /* 自选股 6格高级卡片与 Mini Sparkline SVG */
         .watchlist-grid-6 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         @media (max-width: 500px) { .watchlist-grid-6 { grid-template-columns: repeat(2, 1fr); } }
 
@@ -106,23 +106,24 @@
         body.dark-mode .theme-pink { background: #1e293b; border-top-color: #ec4899; }
         body.dark-mode .theme-indigo { background: #1e293b; border-top-color: #6366f1; }
 
-        .watchlist-card { border-radius: 12px; padding: 12px; position: relative; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; min-height: 85px; }
+        .watchlist-card { border-radius: 12px; padding: 12px; position: relative; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 6px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; min-height: 110px; }
         .watchlist-card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); }
-        .watchlist-card .stock-code { font-weight: 800; font-size: 15px; color: var(--text-main); }
-        .watchlist-card .stock-sub { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
-        .watchlist-card .action-btn { font-size: 11px; font-weight: 700; color: #1a73e8; margin-top: 8px; }
+        .watchlist-card .stock-code { font-weight: 800; font-size: 14px; color: var(--text-main); }
+        .watchlist-card .stock-price { font-size: 13px; font-weight: 700; margin-top: 2px; }
+        .watchlist-card .stock-change { font-size: 11px; font-weight: 700; }
+        
+        /* Sparkline 走势线 */
+        .sparkline-svg { width: 100%; height: 26px; margin-top: 6px; overflow: visible; }
 
-        .empty-slot { border: 2px dashed var(--border-color); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-sub); font-size: 12px; min-height: 85px; background: var(--box-bg); }
-        .delete-btn { position: absolute; top: 6px; right: 8px; background: none; border: none; color: var(--text-sub); font-size: 16px; cursor: pointer; }
+        .empty-slot { border: 2px dashed var(--border-color); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-sub); font-size: 12px; min-height: 110px; background: var(--box-bg); cursor: pointer; gap: 4px; }
+        .delete-btn { position: absolute; top: 6px; right: 8px; background: none; border: none; color: var(--text-sub); font-size: 16px; cursor: pointer; z-index: 10; }
 
-        /* 买卖交易区与策略设置面板 */
         .trade-box { background: var(--box-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; margin-top: 15px; }
         .trade-inputs { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
         .trade-input { width: 90px; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; background: var(--card-bg); color: var(--text-main); }
         .btn-buy { background: #00b060; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; flex: 1; }
         .btn-sell { background: #ff3b30; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 700; cursor: pointer; flex: 1; }
 
-        /* 止盈止损策略卡片 */
         .strategy-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px; margin-top: 12px; font-size: 13px; }
         body.dark-mode .strategy-box { background: #062c19; border-color: #14532d; }
         .btn-strategy { background: #16a34a; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; }
@@ -137,7 +138,6 @@
         .ai-card { background: linear-gradient(135deg, #e8f0fe 0%, #e3edfd 100%); border-left: 5px solid #1a73e8; border-radius: 12px; padding: 14px; margin-top: 15px; }
         body.dark-mode .ai-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); }
 
-        /* 财经新闻流 */
         .news-section { margin-top: 16px; background: var(--box-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; }
         .news-title { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .news-badge { background: #e0f2fe; color: #0369a1; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
@@ -147,7 +147,6 @@
         .news-heading { font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.3; margin-bottom: 4px; }
         .news-meta { font-size: 11px; color: var(--text-sub); display: flex; justify-content: space-between; }
 
-        /* 二维码分享区 */
         .share-footer { background: var(--card-bg); border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 4px 16px rgba(0,0,0,0.04); margin-top: 8px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
         .qr-container { background: #ffffff; padding: 10px; border-radius: 12px; border: 1px solid var(--border-color); display: inline-block; }
     </style>
@@ -201,12 +200,11 @@
             </div>
         </div>
 
-        <!-- 持仓与交易历史（带 Roll Down 下拉菜单） -->
+        <!-- 持仓与交易历史 -->
         <div class="card">
             <div class="card-title">
                 <span id="currentViewTitle">📊 我的持仓明细</span>
                 
-                <!-- ⚙️ 资产与数据管理 Roll Down Menu -->
                 <div class="dropdown-menu-container">
                     <button class="menu-btn" onclick="toggleMenu(event)">
                         ⚙️ 管理与功能 ▾
@@ -254,12 +252,22 @@
             </div>
         </div>
 
-        <!-- 6小格自选股看板 -->
+        <!-- 6小格自选股看板 (支持多市场筛选 & Mini Sparkline 走势图) -->
         <div class="card">
             <div class="card-title">
                 <span>我的自选股 (Watchlist)</span>
-                <span style="font-size: 12px; color: var(--text-sub);">(最多精选 6 只)</span>
+                <button class="menu-btn" style="padding:4px 8px; font-size:11px;" onclick="addCurrentToWatchlist()">+ 添加当前股票</button>
             </div>
+
+            <!-- 市场分类标签 -->
+            <div class="market-tabs">
+                <button class="market-tab-btn active" onclick="filterMarket('ALL', this)">全部</button>
+                <button class="market-tab-btn" onclick="filterMarket('AX', this)">🇦🇺 澳股</button>
+                <button class="market-tab-btn" onclick="filterMarket('US', this)">🇺🇸 美股</button>
+                <button class="market-tab-btn" onclick="filterMarket('HK', this)">🇭🇰 港股</button>
+                <button class="market-tab-btn" onclick="filterMarket('CN', this)">🇨🇳 沪深</button>
+            </div>
+
             <div id="watchlistGrid" class="watchlist-grid-6"></div>
         </div>
 
@@ -330,7 +338,7 @@
     <script>
         let portfolio = JSON.parse(localStorage.getItem('myPortfolio_v7')) || { cash: 100000, holdings: {} };
         let historyLogs = JSON.parse(localStorage.getItem('myHistoryLogs')) || [];
-        let watchlist = JSON.parse(localStorage.getItem('myWatchlist')) || ['CBA.AX', 'AAPL', 'NVDA', '0700.HK'];
+        let watchlist = JSON.parse(localStorage.getItem('myWatchlist')) || ['CBA.AX', 'AAPL', 'NVDA', '0700.HK', 'BHP.AX', 'MSFT'];
         let isDarkMode = localStorage.getItem('myDarkMode') === 'true';
 
         const exchangeRates = { USD: 1.0, AUD: 1.52, HKD: 7.82, CNY: 7.25 };
@@ -341,6 +349,8 @@
         let currentStock = null;
         let chart = null, candlestickSeries = null;
         let currentActiveTab = 'holdings';
+        let currentMarketFilter = 'ALL';
+        let watchlistDataCache = {};
 
         window.onload = function() {
             if (isDarkMode) applyDarkMode(true);
@@ -350,7 +360,6 @@
             refreshAllHoldingsPrices();
             generateQRCode();
 
-            // 点击空白处自动关闭 Roll Down 菜单
             window.addEventListener('click', function(e) {
                 if (!e.target.matches('.menu-btn')) {
                     const menu = document.getElementById('dropdownMenu');
@@ -368,11 +377,8 @@
 
         function selectMenuView(type) {
             document.getElementById('dropdownMenu').classList.remove('show');
-            if (type === 'holdings') {
-                switchTab('holdings');
-            } else if (type === 'history') {
-                switchTab('history');
-            }
+            if (type === 'holdings') switchTab('holdings');
+            else if (type === 'history') switchTab('history');
         }
 
         function toggleDarkMode() {
@@ -393,7 +399,123 @@
             if (chart) initChart();
         }
 
-        /* 💾 备份与 📤 还原 JSON 功能 */
+        function filterMarket(market, btnEl) {
+            currentMarketFilter = market;
+            document.querySelectorAll('.market-tab-btn').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            renderWatchlist();
+        }
+
+        function addCurrentToWatchlist() {
+            if (!currentStock) return alert('请先搜索并选择一只股票！');
+            const symbol = currentStock.symbol;
+            if (watchlist.includes(symbol)) return alert(`${symbol} 已在自选股列表中！`);
+            if (watchlist.length >= 6) return alert('自选股已满（最多6只），请先删除部分股票。');
+            watchlist.push(symbol);
+            localStorage.setItem('myWatchlist', JSON.stringify(watchlist));
+            renderWatchlist();
+        }
+
+        async function fetchWatchlistSparkline(symbol) {
+            try {
+                const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=7d&interval=1d`);
+                const data = await response.json();
+                const result = data.chart.result[0];
+                const meta = result.meta;
+                const quotes = result.indicators.quote[0].close.filter(p => p !== null);
+
+                const price = meta.regularMarketPrice;
+                const prevClose = meta.chartPreviousClose;
+                const changePct = (((price - prevClose) / prevClose) * 100).toFixed(2);
+
+                watchlistDataCache[symbol] = { price, changePct, quotes };
+                renderWatchlistCardContent(symbol);
+            } catch (e) {}
+        }
+
+        function renderWatchlistCardContent(symbol) {
+            const cardEl = document.getElementById(`wl-card-${symbol.replace('.', '_')}`);
+            if (!cardEl || !watchlistDataCache[symbol]) return;
+
+            const data = watchlistDataCache[symbol];
+            const isUp = parseFloat(data.changePct) >= 0;
+            const colorClass = isUp ? 'text-up' : 'text-down';
+            const strokeColor = isUp ? '#00b060' : '#ff3b30';
+
+            // 绘制 Mini Sparkline SVG
+            const quotes = data.quotes;
+            let svgPath = '';
+            if (quotes && quotes.length > 1) {
+                const min = Math.min(...quotes);
+                const max = Math.max(...quotes);
+                const range = max - min || 1;
+                const width = 100, height = 24;
+
+                const points = quotes.map((val, idx) => {
+                    const x = (idx / (quotes.length - 1)) * width;
+                    const y = height - ((val - min) / range) * (height - 4) - 2;
+                    return `${x.toFixed(1)},${y.toFixed(1)}`;
+                }).join(' L ');
+
+                svgPath = `<path d="M ${points}" fill="none" stroke="${strokeColor}" stroke-width="2" stroke-linecap="round"/>`;
+            }
+
+            cardEl.querySelector('.watchlist-info').innerHTML = `
+                <div class="stock-price">$${data.price.toFixed(2)}</div>
+                <div class="stock-change ${colorClass}">${isUp ? '+' : ''}${data.changePct}%</div>
+                <svg class="sparkline-svg" viewBox="0 0 100 26">${svgPath}</svg>
+            `;
+        }
+
+        function renderWatchlist() {
+            const grid = document.getElementById('watchlistGrid');
+            let filteredWatchlist = watchlist.filter(symbol => {
+                if (currentMarketFilter === 'ALL') return true;
+                if (currentMarketFilter === 'AX') return symbol.endsWith('.AX');
+                if (currentMarketFilter === 'HK') return symbol.endsWith('.HK');
+                if (currentMarketFilter === 'CN') return symbol.endsWith('.SS') || symbol.endsWith('.SZ');
+                if (currentMarketFilter === 'US') return !symbol.includes('.');
+                return true;
+            });
+
+            let html = '';
+            for (let i = 0; i < 6; i++) {
+                if (i < filteredWatchlist.length) {
+                    const symbol = filteredWatchlist[i];
+                    const themeClass = themes[i % themes.length];
+                    const cardId = `wl-card-${symbol.replace('.', '_')}`;
+
+                    html += `
+                        <div class="watchlist-card ${themeClass}" id="${cardId}" onclick="fetchStockData('${symbol}')">
+                            <button class="delete-btn" onclick="removeStock('${symbol}', event)">×</button>
+                            <div>
+                                <div class="stock-code">${symbol}</div>
+                            </div>
+                            <div class="watchlist-info">
+                                <div style="font-size:11px; color:var(--text-sub);">加载走势...</div>
+                            </div>
+                        </div>
+                    `;
+                    fetchWatchlistSparkline(symbol);
+                } else {
+                    html += `
+                        <div class="empty-slot" onclick="document.getElementById('searchInput').focus();">
+                            <div style="font-size:18px;">+</div>
+                            <div>添加槽位 ${i + 1}</div>
+                        </div>
+                    `;
+                }
+            }
+            grid.innerHTML = html;
+        }
+
+        function removeStock(symbol, event) {
+            event.stopPropagation();
+            watchlist = watchlist.filter(s => s !== symbol);
+            localStorage.setItem('myWatchlist', JSON.stringify(watchlist));
+            renderWatchlist();
+        }
+
         function backupDataJSON() {
             document.getElementById('dropdownMenu').classList.remove('show');
             const backupObj = {
@@ -437,7 +559,7 @@
                         alert('⚠️ 无效的备份文件格式！');
                     }
                 } catch (error) {
-                    alert('⚠️ 解析文件出错，请确保上传正确的 EasyStock JSON 备份文件！');
+                    alert('⚠️ 解析文件出错！');
                 }
             };
             fileReader.readAsText(event.target.files[0]);
@@ -461,7 +583,7 @@
 
         function exportReportCSV() {
             document.getElementById('dropdownMenu').classList.remove('show');
-            let csvContent = "\uFEFF"; // UTF-8 BOM 防 Excel 乱码
+            let csvContent = "\uFEFF";
 
             if (currentActiveTab === 'holdings') {
                 csvContent += "代码,持仓股数,买入成本价,最新市价,止盈目标价,止损防守价,持仓总市值\n";
@@ -580,7 +702,7 @@
                 checkAutoStrategy(symbol, price);
                 renderPortfolioTable();
                 
-                document.getElementById('dispAiAnalysis').innerText = `【AI分析】${symbol} 当前价格 ${price.toFixed(2)}。下拉菜单整合与极简界面已就绪。`;
+                document.getElementById('dispAiAnalysis').innerText = `【AI诊断】${symbol} 当前价格 ${price.toFixed(2)}。自选股 Mini Sparkline 和市场标签筛选已完美就绪！`;
 
                 fetchFilteredStockNews(symbol, meta.shortName || symbol);
 
@@ -843,37 +965,6 @@
             }
             savePortfolio();
             renderPortfolioTable();
-        }
-
-        function renderWatchlist() {
-            const grid = document.getElementById('watchlistGrid');
-            let html = '';
-            for (let i = 0; i < 6; i++) {
-                if (i < watchlist.length) {
-                    const symbol = watchlist[i];
-                    const themeClass = themes[i % themes.length];
-                    html += `
-                        <div class="watchlist-card ${themeClass}" onclick="fetchStockData('${symbol}')">
-                            <button class="delete-btn" onclick="removeStock('${symbol}', event)">×</button>
-                            <div>
-                                <div class="stock-code">${symbol}</div>
-                                <div class="stock-sub">自选 #${i + 1}</div>
-                            </div>
-                            <div class="action-btn">查看分析 →</div>
-                        </div>
-                    `;
-                } else {
-                    html += `<div class="empty-slot" onclick="document.getElementById('searchInput').focus();">+ 槽位 ${i + 1}</div>`;
-                }
-            }
-            grid.innerHTML = html;
-        }
-
-        function removeStock(symbol, event) {
-            event.stopPropagation();
-            watchlist = watchlist.filter(s => s !== symbol);
-            localStorage.setItem('myWatchlist', JSON.stringify(watchlist));
-            renderWatchlist();
         }
 
         function updateCurrentHoldQtyDisplay() {
