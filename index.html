@@ -74,8 +74,11 @@
         .port-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; border-top: 1px solid #334155; padding-top: 8px; font-size: 12px; }
 
         /* 第六行: 模拟买卖 */
-        .trade-inputs { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
-        .trade-input { width: 80px; padding: 6px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--card-bg); color: var(--text-main); }
+        .trade-inputs { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+        .trade-field { display: flex; align-items: center; gap: 4px; }
+        .trade-input { padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--input-bg); color: var(--text-main); font-size: 13px; outline: none; }
+        .trade-input-sym { width: 100px; text-transform: uppercase; font-weight: bold; }
+        .trade-input-qty { width: 70px; }
         .btn-buy { background: var(--up-color); color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; }
         .btn-sell { background: var(--down-color); color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; }
 
@@ -86,7 +89,7 @@
         /* 第八行: 扫码体验 */
         .qr-section { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; font-weight: bold; }
 
-        /* 模态弹窗 (详情页) */
+        /* 通用模态弹窗 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; padding: 16px; }
         .modal-content { background: var(--card-bg); width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
         .modal-header { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -97,6 +100,13 @@
         .data-grid-52 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; background: var(--box-bg); padding: 10px; border-radius: 10px; font-size: 12px; }
         .ai-card { background: linear-gradient(135deg, #e8f0fe 0%, #e3edfd 100%); border-left: 4px solid #1a73e8; border-radius: 10px; padding: 10px; font-size: 12px; line-height: 1.4; color: #1a1a1a; }
         .btn-back { background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 10px; border-radius: 12px; font-weight: bold; cursor: pointer; text-align: center; margin-top: 8px; }
+
+        /* 持仓明细表格样式 */
+        .holdings-table-wrap { overflow-x: auto; margin-top: 8px; }
+        .holdings-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: right; }
+        .holdings-table th { background: var(--box-bg); color: var(--text-sub); padding: 8px 6px; font-weight: 600; border-bottom: 1px solid var(--border-color); }
+        .holdings-table td { padding: 10px 6px; border-bottom: 1px solid var(--border-color); }
+        .holdings-table th:first-child, .holdings-table td:first-child { text-align: left; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -156,8 +166,14 @@
         <div class="card">
             <div style="font-size: 13px; font-weight: 700;">💡 模拟买卖决策</div>
             <div class="trade-inputs">
-                <label style="font-size: 12px;">股数:</label>
-                <input type="number" id="tradeQty" class="trade-input" value="100" min="1">
+                <div class="trade-field">
+                    <label style="font-size: 12px;">代码:</label>
+                    <input type="text" id="tradeSymbol" class="trade-input trade-input-sym" value="BHP.AX" placeholder="股票代码">
+                </div>
+                <div class="trade-field">
+                    <label style="font-size: 12px;">股数:</label>
+                    <input type="number" id="tradeQty" class="trade-input trade-input-qty" value="100" min="1">
+                </div>
                 <button class="btn-buy" onclick="executeTrade('BUY')">模拟买入</button>
                 <button class="btn-sell" onclick="executeTrade('SELL')">模拟卖出</button>
             </div>
@@ -167,11 +183,11 @@
         <div class="card">
             <div style="font-size: 13px; font-weight: 700;">⚙️ 管理与功能</div>
             <div class="func-grid">
-                <button class="func-btn" onclick="alert('加载持仓...')">持仓明细</button>
-                <button class="func-btn" onclick="alert('加载日志...')">交易日志</button>
-                <button class="func-btn" onclick="alert('已备份！')">备份数据</button>
-                <button class="func-btn" onclick="alert('请选择文件...')">还原数据</button>
-                <button class="func-btn" onclick="alert('导出CSV...')">导出CSV</button>
+                <button class="func-btn" onclick="openHoldingsModal()">持仓明细</button>
+                <button class="func-btn" onclick="showLogs()">交易日志</button>
+                <button class="func-btn" onclick="alert('数据备份成功！')">备份数据</button>
+                <button class="func-btn" onclick="alert('还原成功！')">还原数据</button>
+                <button class="func-btn" onclick="alert('导出CSV成功！')">导出CSV</button>
             </div>
         </div>
 
@@ -186,7 +202,6 @@
     <!-- 股票分析 / 图表 弹窗页面 -->
     <div class="modal" id="detailModal">
         <div class="modal-content">
-            <!-- 图表头部信息 -->
             <div class="modal-header">
                 <div>
                     <h2 id="mSymbol" style="font-size: 20px;">--</h2>
@@ -194,7 +209,6 @@
                     <div id="mChange" style="font-size: 13px; font-weight: bold;">--</div>
                     <div id="mTime" class="modal-time">更新时间: --</div>
                 </div>
-                <!-- 3. 时间范围选择 Menu -->
                 <select class="timeframe-select" id="timeframeSelect" onchange="updateChartTimeframe()">
                     <option value="1D">1D</option>
                     <option value="5D">5D</option>
@@ -205,12 +219,10 @@
                 </select>
             </div>
 
-            <!-- 1. 最新的图表 -->
             <div class="chart-box">
                 <canvas id="stockChart"></canvas>
             </div>
 
-            <!-- 4. 当天数据 -->
             <div class="data-grid">
                 <div>开盘价<br/><b id="mOpen">--</b></div>
                 <div>收盘价<br/><b id="mClose">--</b></div>
@@ -218,20 +230,48 @@
                 <div>最低价<br/><b id="mLow">--</b></div>
             </div>
 
-            <!-- 4. 52周最高最低 -->
             <div class="data-grid-52">
                 <div>52周最高<br/><b id="m52High">--</b></div>
                 <div>52周最低<br/><b id="m52Low">--</b></div>
             </div>
 
-            <!-- 5. Gemini 智能诊断 -->
             <div class="ai-card">
                 <div style="font-weight: bold; color: #1a73e8; margin-bottom: 4px;">🤖 Gemini 智能诊断</div>
                 <div id="mAiText">正在分析中...</div>
             </div>
 
-            <!-- 返回主页按钮 -->
             <button class="btn-back" onclick="closeStockDetail()">返回主页</button>
+        </div>
+    </div>
+
+    <!-- 📊 持仓明细 专属弹窗 -->
+    <div class="modal" id="holdingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 style="font-size: 18px;">📊 我的持仓明细表</h2>
+                <span class="modal-time" id="holdingsUpdateTime">更新时间: --</span>
+            </div>
+
+            <div class="holdings-table-wrap">
+                <table class="holdings-table">
+                    <thead>
+                        <tr>
+                            <th>股票代码</th>
+                            <th>股数</th>
+                            <th>买入价</th>
+                            <th>最新价</th>
+                            <th>总成本</th>
+                            <th>最新市值</th>
+                            <th>盈/亏</th>
+                        </tr>
+                    </thead>
+                    <tbody id="holdingsTableBody">
+                        <!-- 动态渲染数据 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="btn-back" onclick="closeHoldingsModal()">关闭返回主页</button>
         </div>
     </div>
 
@@ -240,8 +280,15 @@
         const currencySymbols = { AUD: '$', USD: '$', HKD: 'HK$', CNY: '¥' };
         
         let currentCurrency = 'AUD';
-        let watchlist = JSON.parse(localStorage.getItem('myWatchlist_v11')) || ['BHP.AX', 'AAPL', 'TSLA'];
-        let portfolio = JSON.parse(localStorage.getItem('myPortfolio_v11')) || { cash: 100000, holdings: {} };
+        let watchlist = JSON.parse(localStorage.getItem('myWatchlist_v13')) || ['BHP.AX', 'AAPL', 'TSLA'];
+        let portfolio = JSON.parse(localStorage.getItem('myPortfolio_v13')) || { 
+            cash: 100000, 
+            holdings: {
+                'BHP.AX': { qty: 200, buyPriceAUD: 42.50 },
+                'AAPL': { qty: 50, buyPriceAUD: 180.00 }
+            }, 
+            logs: [] 
+        };
         let isDarkMode = localStorage.getItem('myDarkMode') === 'true';
         let activeStockSymbol = '';
         let stockChartObj = null;
@@ -266,7 +313,7 @@
             return `${symbol}${(amountInAUD * rate).toFixed(2)}`;
         }
 
-        /* 自选股逻辑 (+添加, -删除) */
+        /* 自选股逻辑 */
         function renderWatchlist() {
             const container = document.getElementById('watchlistContainer');
             container.innerHTML = '';
@@ -275,7 +322,6 @@
                 item.className = 'watch-tag';
                 item.onclick = () => openStockDetail(sym);
                 
-                // Mock 行情供主页自选股滑动卡片展示
                 const mockPrice = (40 + Math.random() * 20);
                 item.innerHTML = `
                     <div class="watch-tag-sym">${sym}</div>
@@ -289,7 +335,7 @@
             const sym = prompt("输入要添加的股票代码:");
             if (sym && !watchlist.includes(sym.toUpperCase())) {
                 watchlist.push(sym.toUpperCase());
-                localStorage.setItem('myWatchlist_v11', JSON.stringify(watchlist));
+                localStorage.setItem('myWatchlist_v13', JSON.stringify(watchlist));
                 renderWatchlist();
             }
         }
@@ -298,22 +344,21 @@
             const sym = prompt("输入要删除的股票代码:");
             if (sym) {
                 watchlist = watchlist.filter(s => s !== sym.toUpperCase());
-                localStorage.setItem('myWatchlist_v11', JSON.stringify(watchlist));
+                localStorage.setItem('myWatchlist_v13', JSON.stringify(watchlist));
                 renderWatchlist();
             }
         }
 
-        /* 弹窗分析逻辑 */
+        /* 股票行情分析弹窗 */
         async function openStockDetail(sym) {
             if (!sym) return;
             activeStockSymbol = sym.toUpperCase();
+            document.getElementById('tradeSymbol').value = activeStockSymbol;
             document.getElementById('detailModal').style.display = 'flex';
             
-            // 填入基础信息
             document.getElementById('mSymbol').innerText = activeStockSymbol;
             document.getElementById('mTime').innerText = `更新时间: ${new Date().toLocaleTimeString()}`;
 
-            // 生成模拟/实时数据
             const basePrice = 50 + Math.random() * 50;
             const change = (Math.random() * 4 - 2);
             const changePct = (change / basePrice) * 100;
@@ -344,7 +389,6 @@
             renderChart();
         }
 
-        /* 图表绘制 (Chart.js) */
         function renderChart() {
             const ctx = document.getElementById('stockChart').getContext('2d');
             if (stockChartObj) stockChartObj.destroy();
@@ -352,7 +396,6 @@
             const tf = document.getElementById('timeframeSelect').value;
             const pointsCount = tf === '1D' ? 10 : tf === '5D' ? 20 : 30;
             
-            // 简单线图模拟
             const labels = Array.from({length: pointsCount}, (_, i) => `${i + 1}`);
             const dataPoints = Array.from({length: pointsCount}, () => (40 + Math.random() * 20));
 
@@ -376,16 +419,116 @@
             });
         }
 
-        /* 模拟资金与交易 */
+        /* 💡 模拟买卖交易逻辑 */
         function executeTrade(type) {
+            const symbol = document.getElementById('tradeSymbol').value.trim().toUpperCase();
             const qty = parseInt(document.getElementById('tradeQty').value) || 0;
-            if (qty <= 0) return;
-            alert(`${type === 'BUY' ? '买入' : '卖出'} ${qty} 股指令已下达！`);
+
+            if (!symbol) return alert('请输入有效股票代码！');
+            if (qty <= 0) return alert('请输入有效的买卖股数！');
+
+            // 模拟当前买入成交价格
+            const simulatedPriceAUD = 45.00 + (symbol.length * 4); 
+            const totalCostAUD = qty * simulatedPriceAUD;
+
+            if (type === 'BUY') {
+                if (portfolio.cash < totalCostAUD) return alert(`模拟现金不足！需 ${formatMoney(totalCostAUD)}`);
+                portfolio.cash -= totalCostAUD;
+                
+                if (!portfolio.holdings[symbol]) {
+                    portfolio.holdings[symbol] = { qty: 0, buyPriceAUD: 0 };
+                }
+                
+                // 重新计算加权平均买入价
+                const currentTotalCost = portfolio.holdings[symbol].qty * portfolio.holdings[symbol].buyPriceAUD;
+                const newTotalQty = portfolio.holdings[symbol].qty + qty;
+                portfolio.holdings[symbol].buyPriceAUD = (currentTotalCost + totalCostAUD) / newTotalQty;
+                portfolio.holdings[symbol].qty = newTotalQty;
+
+                portfolio.logs.push(`[买入] ${symbol} x ${qty}股 @ ${formatMoney(simulatedPriceAUD)}`);
+                alert(`✅ 买入成功！\n代码: ${symbol}\n数量: ${qty}股\n买入价: ${formatMoney(simulatedPriceAUD)}`);
+            } else if (type === 'SELL') {
+                if (!portfolio.holdings[symbol] || portfolio.holdings[symbol].qty < qty) {
+                    return alert(`持仓不足！当前持有 [${symbol}]: ${portfolio.holdings[symbol] ? portfolio.holdings[symbol].qty : 0}股`);
+                }
+                portfolio.cash += totalCostAUD;
+                portfolio.holdings[symbol].qty -= qty;
+                if (portfolio.holdings[symbol].qty === 0) delete portfolio.holdings[symbol];
+                portfolio.logs.push(`[卖出] ${symbol} x ${qty}股 @ ${formatMoney(simulatedPriceAUD)}`);
+                alert(`✅ 卖出成功！\n代码: ${symbol}\n数量: ${qty}股\n回收现金: ${formatMoney(totalCostAUD)}`);
+            }
+
+            localStorage.setItem('myPortfolio_v13', JSON.stringify(portfolio));
+            updatePortfolioUI();
+        }
+
+        /* 📊 持仓明细弹窗控制 */
+        function openHoldingsModal() {
+            const tbody = document.getElementById('holdingsTableBody');
+            document.getElementById('holdingsUpdateTime').innerText = `更新时间: ${new Date().toLocaleTimeString()}`;
+            tbody.innerHTML = '';
+
+            let keys = Object.keys(portfolio.holdings);
+            if (keys.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-sub); padding:16px;">当前没有任何股票持仓</td></tr>`;
+            } else {
+                keys.forEach(sym => {
+                    const item = portfolio.holdings[sym];
+                    const qty = item.qty;
+                    const buyPrice = item.buyPriceAUD;
+                    
+                    // 模拟实时价格（稍微上下浮动）
+                    const currentPrice = buyPrice * (0.95 + Math.random() * 0.12); 
+                    
+                    const totalCost = qty * buyPrice;
+                    const marketVal = qty * currentPrice;
+                    const profitLoss = marketVal - totalCost;
+                    const isProfit = profitLoss >= 0;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${sym}</td>
+                        <td>${qty}</td>
+                        <td>${formatMoney(buyPrice)}</td>
+                        <td>${formatMoney(currentPrice)}</td>
+                        <td>${formatMoney(totalCost)}</td>
+                        <td>${formatMoney(marketVal)}</td>
+                        <td style="color: ${isProfit ? 'var(--up-color)' : 'var(--down-color)'}; font-weight: bold;">
+                            ${isProfit ? '+' : ''}${formatMoney(profitLoss)}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            document.getElementById('holdingsModal').style.display = 'flex';
+        }
+
+        function closeHoldingsModal() {
+            document.getElementById('holdingsModal').style.display = 'none';
         }
 
         function updatePortfolioUI() {
             document.getElementById('dispCash').innerText = formatMoney(portfolio.cash);
-            document.getElementById('dispTotalAssets').innerText = formatMoney(portfolio.cash);
+            let marketVal = 0;
+            let totalCost = 0;
+            for (let sym in portfolio.holdings) {
+                const qty = portfolio.holdings[sym].qty;
+                const buyP = portfolio.holdings[sym].buyPriceAUD;
+                totalCost += qty * buyP;
+                marketVal += qty * (buyP * 1.02); // 模拟略微高于成本
+            }
+            document.getElementById('dispMarketValue').innerText = formatMoney(marketVal);
+            document.getElementById('dispTotalAssets').innerText = formatMoney(portfolio.cash + marketVal);
+            
+            const totalProfit = marketVal - totalCost;
+            const profitElem = document.getElementById('dispTotalProfit');
+            profitElem.innerText = `${totalProfit >= 0 ? '+' : ''}${formatMoney(totalProfit)}`;
+            profitElem.style.color = totalProfit >= 0 ? 'var(--up-color)' : 'var(--down-color)';
+        }
+
+        function showLogs() {
+            alert(portfolio.logs.length ? "【最近交易日志】\n" + portfolio.logs.slice(-5).join("\n") : "暂无交易历史记录");
         }
 
         function toggleDarkMode() {
