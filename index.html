@@ -197,7 +197,6 @@
                 <button class="func-btn" id="lblBtnBackup" onclick="triggerBackup()">Backup</button>
                 <button class="func-btn" id="lblBtnRestore" onclick="triggerRestore()">Restore</button>
                 <button class="func-btn" id="lblBtnExport" onclick="triggerExport()">Export CSV</button>
-                <button class="func-btn" style="color:red;" onclick="resetAllData()">重置清空数据</button>
             </div>
         </div>
 
@@ -288,7 +287,7 @@
     </div>
 
     <script>
-        const API_BASE_URL = `http://${window.location.hostname}:5000/api`;
+        const API_BASE_URL = 'http://127.0.0.1:5000/api';
 
         const currencyRates = { AUD: 1.0, USD: 0.66, HKD: 5.15, CNY: 4.75 };
         const currencySymbols = { AUD: '$', USD: '$', HKD: 'HK$', CNY: '¥' };
@@ -462,14 +461,6 @@
                 renderWatchlist();
             }
         }
-
-        function resetAllData() {
-             if (confirm("确定要重置并清空所有旧的持仓和交易日志吗？")) {
-                localStorage.clear();
-                location.reload();
-            }
-        }
-
 
         /* 核心 Modal: 获取真实股票行情数据 */
         async function openStockDetail(sym) {
