@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyStock - 极智体验版</title>
+    <title>EasyStock - Ultimate Trading Hub</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a73e8'/><path d='M25 70 L45 50 L60 60 L80 30' stroke='white' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/><circle cx='80' cy='30' r='5' fill='%2334a853'/></svg>">
@@ -43,38 +43,38 @@
         .app-container { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 14px; }
         .card { background: var(--card-bg); border-radius: 18px; padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
 
-        /* 第一行: Logo, 语言选择, 日夜模式 */
+        /* Top Row */
         .top-row { display: flex; justify-content: space-between; align-items: center; }
         .logo-icon { background: linear-gradient(135deg, #1a73e8, #34a853); color: white; font-weight: 900; padding: 6px 14px; border-radius: 12px; font-size: 20px; }
         .top-actions { display: flex; gap: 8px; }
         .lang-select, .currency-select, .timeframe-select { background: var(--box-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 10px; border-radius: 12px; font-size: 13px; font-weight: bold; outline: none; }
         .theme-btn { background: var(--box-bg); border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 12px; border-radius: 12px; cursor: pointer; font-size: 13px; }
 
-        /* 第二行: 分析栏 */
+        /* Search Bar */
         .search-box { display: flex; gap: 8px; }
         .search-input { flex: 1; padding: 10px 16px; font-size: 14px; border: 2px solid var(--border-color); border-radius: 25px; outline: none; background: var(--input-bg); color: var(--text-main); }
         .search-btn { background: #1a73e8; color: white; border: none; padding: 0 20px; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: 600; }
 
-        /* 第三行: 我的自选股 + 按键 */
+        /* Watchlist Row */
         .watchlist-header { display: flex; justify-content: space-between; align-items: center; }
         .action-btns { display: flex; gap: 6px; }
         .btn-add { background: #1a73e8; color: white; border: none; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; }
         .btn-del { background: #ff3b30; color: white; border: none; padding: 4px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; }
 
-        /* 第四行: 横向滑动自选股标签 */
+        /* Watchlist Slider */
         .watchlist-slider { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .watchlist-slider::-webkit-scrollbar { display: none; }
         .watch-tag { background: var(--box-bg); border: 1px solid var(--border-color); padding: 8px 14px; border-radius: 12px; min-width: 110px; cursor: pointer; flex-shrink: 0; }
         .watch-tag-sym { font-weight: bold; font-size: 13px; }
         .watch-tag-price { font-size: 13px; font-weight: bold; margin-top: 2px; }
 
-        /* 第五行: 账户总资产 (资产卡片 + 右上角外币转换) */
+        /* Portfolio Card */
         .portfolio-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; border-radius: 18px; padding: 16px; }
         .portfolio-header { display: flex; justify-content: space-between; align-items: center; }
         .port-balance { font-size: 26px; font-weight: 800; margin: 6px 0; }
         .port-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; border-top: 1px solid #334155; padding-top: 8px; font-size: 12px; }
 
-        /* 第六行: 模拟买卖 */
+        /* Trade Decision Box */
         .trade-inputs { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
         .trade-field { display: flex; align-items: center; gap: 4px; }
         .trade-input { padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--input-bg); color: var(--text-main); font-size: 13px; outline: none; }
@@ -83,14 +83,14 @@
         .btn-buy { background: var(--up-color); color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; }
         .btn-sell { background: var(--down-color); color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; }
 
-        /* 第七行: 管理与功能 */
+        /* Management & Tools Grid */
         .func-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 8px; }
         .func-btn { background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 8px 2px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; text-align: center; }
 
-        /* 第八行: 扫码体验 */
+        /* QR Code Section */
         .qr-section { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 13px; font-weight: bold; }
 
-        /* 通用模态弹窗 */
+        /* Modals (Sub-pages) */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; padding: 16px; }
         .modal-content { background: var(--card-bg); width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
         .modal-header { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -102,7 +102,7 @@
         .ai-card { background: linear-gradient(135deg, #e8f0fe 0%, #e3edfd 100%); border-left: 4px solid #1a73e8; border-radius: 10px; padding: 10px; font-size: 12px; line-height: 1.4; color: #1a1a1a; }
         .btn-back { background: var(--btn-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 10px; border-radius: 12px; font-weight: bold; cursor: pointer; text-align: center; margin-top: 8px; }
 
-        /* 持仓明细表格专属样式 */
+        /* Holdings Table Modal */
         .table-wrapper { overflow-x: auto; width: 100%; margin-top: 8px; }
         .holdings-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: right; }
         .holdings-table th, .holdings-table td { padding: 10px 8px; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
@@ -115,48 +115,47 @@
 
     <div class="app-container">
         
-        <!-- 第一行: Logo, 多语言选择 Roll Down Menu, 日夜模式 -->
+        <!-- Row 1: Logo, Language Select, Theme Toggle -->
         <div class="card top-row">
-            <span class="logo-icon">易</span>
+            <span class="logo-icon">E</span>
             <div class="top-actions">
                 <select class="lang-select" id="langSelector" onchange="onLanguageChange()">
-                    <option value="zh-CN">简体中文</option>
-                    <option value="zh-TW">繁體中文</option>
-                    <option value="en">English</option>
+                    <option value="en" selected>English</option>
+                    <option value="zh-CN">Chinese Simplified</option>
+                    <option value="zh-TW">Chinese Traditional</option>
                 </select>
                 <button class="theme-btn" onclick="toggleDarkMode()">🌙</button>
             </div>
         </div>
 
-        <!-- 第二行: 分析栏 -->
+        <!-- Row 2: Search Bar -->
         <div class="card">
             <div class="search-box">
-                <input type="text" id="searchInput" class="search-input" value="BHP.AX" placeholder="输入股票代码 (如 AAPL, BHP.AX)...">
-                <button class="search-btn" id="lblSearchBtn" onclick="openStockDetail(document.getElementById('searchInput').value)">分析</button>
+                <input type="text" id="searchInput" class="search-input" value="BHP.AX" placeholder="Search Symbol (e.g. AAPL, BHP.AX)...">
+                <button class="search-btn" id="lblSearchBtn" onclick="openStockDetail(document.getElementById('searchInput').value)">Analyze</button>
             </div>
         </div>
 
-        <!-- 第三行: ⭐ 我的自选股 + 操作按键 -->
+        <!-- Row 3: Watchlist Header -->
         <div class="card">
             <div class="watchlist-header">
-                <span style="font-size: 14px; font-weight: 700;" id="lblWatchlist">⭐ 我的自选股</span>
+                <span style="font-size: 14px; font-weight: 700;" id="lblWatchlist">⭐ Watchlist</span>
                 <div class="action-btns">
-                    <button class="btn-add" id="lblBtnAdd" onclick="addWatchlist()">+ 添加</button>
-                    <button class="btn-del" id="lblBtnDel" onclick="removeWatchlist()">- 删除</button>
+                    <button class="btn-add" id="lblBtnAdd" onclick="addWatchlist()">+ Add</button>
+                    <button class="btn-del" id="lblBtnDel" onclick="removeWatchlist()">- Delete</button>
                 </div>
             </div>
             
-            <!-- 第四行: 顺滑滑动市场标签 (显示自选股) -->
+            <!-- Row 4: Watchlist Slider -->
             <div class="watchlist-slider" id="watchlistContainer" style="margin-top: 10px;">
-                <!-- 动态更新 -->
+                <!-- Rendered dynamically -->
             </div>
         </div>
 
-        <!-- 第五行: 🎮 账户总资产 + 右上角外币转换 Roll Down Menu -->
+        <!-- Row 5: Total Portfolio Card -->
         <div class="portfolio-card">
             <div class="portfolio-header">
-                <span style="font-size: 12px; color: #94a3b8;" id="lblTotalAssets">🎮 账户总资产</span>
-                <!-- 外币转换菜单移至此处 -->
+                <span style="font-size: 12px; color: #94a3b8;" id="lblTotalAssets">🎮 Total Portfolio</span>
                 <select class="currency-select" id="currencySelector" onchange="onCurrencyChange()" style="background: #0f172a; color: white; border-color: #334155;">
                     <option value="AUD">AUD ($)</option>
                     <option value="USD">USD ($)</option>
@@ -166,50 +165,50 @@
             </div>
             <div class="port-balance" id="dispTotalAssets">$100,000.00</div>
             <div class="port-grid">
-                <div><span id="lblCash">模拟现金</span><br/><b id="dispCash">$100,000.00</b></div>
-                <div><span id="lblMarketVal">持仓市值</span><br/><b id="dispMarketValue">$0.00</b></div>
-                <div><span id="lblProfit">持仓盈亏</span><br/><b id="dispTotalProfit">$0.00</b></div>
+                <div><span id="lblCash">Simulated Cash</span><br/><b id="dispCash">$100,000.00</b></div>
+                <div><span id="lblMarketVal">Market Value</span><br/><b id="dispMarketValue">$0.00</b></div>
+                <div><span id="lblProfit">Total Profit/Loss</span><br/><b id="dispTotalProfit">$0.00</b></div>
             </div>
         </div>
 
-        <!-- 第六行: 💡 模拟买卖决策 -->
+        <!-- Row 6: Simulated Trade -->
         <div class="card">
-            <div style="font-size: 13px; font-weight: 700;" id="lblTradeHeader">💡 模拟买卖决策</div>
+            <div style="font-size: 13px; font-weight: 700;" id="lblTradeHeader">💡 Trade Decision</div>
             <div class="trade-inputs">
                 <div class="trade-field">
-                    <label style="font-size: 12px;" id="lblSymCode">代码:</label>
-                    <input type="text" id="tradeSymbol" class="trade-input trade-input-sym" value="BHP.AX" placeholder="代码">
+                    <label style="font-size: 12px;" id="lblSymCode">Symbol:</label>
+                    <input type="text" id="tradeSymbol" class="trade-input trade-input-sym" value="BHP.AX" placeholder="Symbol">
                 </div>
                 <div class="trade-field">
-                    <label style="font-size: 12px;" id="lblSymQty">股数:</label>
+                    <label style="font-size: 12px;" id="lblSymQty">Qty:</label>
                     <input type="number" id="tradeQty" class="trade-input trade-input-qty" value="100" min="1">
                 </div>
-                <button class="btn-buy" id="lblBtnBuy" onclick="executeTrade('BUY')">模拟买入</button>
-                <button class="btn-sell" id="lblBtnSell" onclick="executeTrade('SELL')">模拟卖出</button>
+                <button class="btn-buy" id="lblBtnBuy" onclick="executeTrade('BUY')">Buy</button>
+                <button class="btn-sell" id="lblBtnSell" onclick="executeTrade('SELL')">Sell</button>
             </div>
         </div>
 
-        <!-- 第七行: ⚙️ 管理与功能 -->
+        <!-- Row 7: Management & Tools -->
         <div class="card">
-            <div style="font-size: 13px; font-weight: 700;" id="lblManageHeader">⚙️ 管理与功能</div>
+            <div style="font-size: 13px; font-weight: 700;" id="lblManageHeader">⚙️ Tools & Settings</div>
             <div class="func-grid">
-                <button class="func-btn" id="lblBtnHoldings" onclick="showHoldingsModal()">持仓明细</button>
-                <button class="func-btn" id="lblBtnLogs" onclick="showLogs()">交易日志</button>
-                <button class="func-btn" id="lblBtnBackup" onclick="alert('数据备份成功！')">备份数据</button>
-                <button class="func-btn" id="lblBtnRestore" onclick="alert('还原成功！')">还原数据</button>
-                <button class="func-btn" id="lblBtnExport" onclick="alert('导出CSV成功！')">导出CSV</button>
+                <button class="func-btn" id="lblBtnHoldings" onclick="showHoldingsModal()">Holdings</button>
+                <button class="func-btn" id="lblBtnLogs" onclick="showLogs()">Trade Logs</button>
+                <button class="func-btn" id="lblBtnBackup" onclick="triggerBackup()">Backup</button>
+                <button class="func-btn" id="lblBtnRestore" onclick="triggerRestore()">Restore</button>
+                <button class="func-btn" id="lblBtnExport" onclick="triggerExport()">Export CSV</button>
             </div>
         </div>
 
-        <!-- 第八行: 📱 扫码体验 -->
+        <!-- Row 8: Scan Mobile Experience -->
         <div class="card qr-section">
-            <div id="lblQrText">📱 扫码在手机上体验</div>
+            <div id="lblQrText">📱 Scan to View on Mobile</div>
             <div id="qrcode"></div>
         </div>
 
     </div>
 
-    <!-- 1. 股票图表分析弹窗 -->
+    <!-- Sub-page Modal 1: Stock Chart & Analytics -->
     <div class="modal" id="detailModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -217,7 +216,7 @@
                     <h2 id="mSymbol" style="font-size: 20px;">--</h2>
                     <div id="mPriceBox" class="modal-price-box">$0.00</div>
                     <div id="mChange" style="font-size: 13px; font-weight: bold;">--</div>
-                    <div id="mTime" class="modal-time">更新时间: --</div>
+                    <div id="mTime" class="modal-time">Updated: --</div>
                 </div>
                 <select class="timeframe-select" id="timeframeSelect" onchange="updateChartTimeframe()">
                     <option value="1D">1D</option>
@@ -234,57 +233,57 @@
             </div>
 
             <div class="data-grid">
-                <div>开盘价<br/><b id="mOpen">--</b></div>
-                <div>收盘价<br/><b id="mClose">--</b></div>
-                <div>最高价<br/><b id="mHigh">--</b></div>
-                <div>最低价<br/><b id="mLow">--</b></div>
+                <div><span id="lblOpen">Open</span><br/><b id="mOpen">--</b></div>
+                <div><span id="lblClose">Close</span><br/><b id="mClose">--</b></div>
+                <div><span id="lblHigh">High</span><br/><b id="mHigh">--</b></div>
+                <div><span id="lblLow">Low</span><br/><b id="mLow">--</b></div>
             </div>
 
             <div class="data-grid-52">
-                <div>52周最高<br/><b id="m52High">--</b></div>
-                <div>52周最低<br/><b id="m52Low">--</b></div>
+                <div><span id="lbl52High">52W High</span><br/><b id="m52High">--</b></div>
+                <div><span id="lbl52Low">52W Low</span><br/><b id="m52Low">--</b></div>
             </div>
 
             <div class="ai-card">
-                <div style="font-weight: bold; color: #1a73e8; margin-bottom: 4px;">🤖 Gemini 智能诊断</div>
-                <div id="mAiText">正在分析中...</div>
+                <div style="font-weight: bold; color: #1a73e8; margin-bottom: 4px;" id="lblAiHeader">🤖 Gemini AI Insights</div>
+                <div id="mAiText">Analyzing market trends...</div>
             </div>
 
-            <button class="btn-back" id="lblBtnBackHome" onclick="closeStockDetail()">返回主页</button>
+            <button class="btn-back" id="lblBtnBackHome" onclick="closeStockDetail()">Back to Dashboard</button>
         </div>
     </div>
 
-    <!-- 2. 持仓明细专属弹窗 -->
+    <!-- Sub-page Modal 2: Holdings Details -->
     <div class="modal" id="holdingsModal">
         <div class="modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="font-size: 16px;" id="lblHoldingsTitle">📊 当前持仓明细表</h3>
-                <span style="font-size: 12px; color: var(--text-sub);" id="holdingsCount">共 0 笔持仓</span>
+                <h3 style="font-size: 16px;" id="lblHoldingsTitle">📊 Current Holdings</h3>
+                <span style="font-size: 12px; color: var(--text-sub);" id="holdingsCount">0 Positions</span>
             </div>
             
             <div class="table-wrapper">
                 <table class="holdings-table">
                     <thead>
                         <tr>
-                            <th id="thCode">代码</th>
-                            <th id="thQty">股数</th>
-                            <th id="thAvgPrice">买入均价</th>
-                            <th id="thPrice">最新价</th>
-                            <th id="thCost">成本</th>
-                            <th id="thMarketValue">最新市值</th>
-                            <th id="thProfit">盈/亏</th>
+                            <th id="thCode">Symbol</th>
+                            <th id="thQty">Qty</th>
+                            <th id="thAvgPrice">Avg Price</th>
+                            <th id="thPrice">Last Price</th>
+                            <th id="thCost">Total Cost</th>
+                            <th id="thMarketValue">Market Value</th>
+                            <th id="thProfit">P/L</th>
                         </tr>
                     </thead>
                     <tbody id="holdingsTableBody">
-                        <!-- 动态渲染 -->
+                        <!-- Rendered Dynamically -->
                     </tbody>
                     <tfoot id="holdingsTableFoot">
-                        <!-- 汇总数据 -->
+                        <!-- Summary -->
                     </tfoot>
                 </table>
             </div>
 
-            <button class="btn-back" id="lblBtnCloseHoldings" onclick="closeHoldingsModal()">关闭返回</button>
+            <button class="btn-back" id="lblBtnCloseHoldings" onclick="closeHoldingsModal()">Close</button>
         </div>
     </div>
 
@@ -293,9 +292,9 @@
         const currencySymbols = { AUD: '$', USD: '$', HKD: 'HK$', CNY: '¥' };
         
         let currentCurrency = 'AUD';
-        let currentLang = 'zh-CN';
-        let watchlist = JSON.parse(localStorage.getItem('myWatchlist_v14')) || ['BHP.AX', 'AAPL', 'TSLA'];
-        let portfolio = JSON.parse(localStorage.getItem('myPortfolio_v14')) || { cash: 100000, holdings: {}, logs: [] };
+        let currentLang = 'en';
+        let watchlist = JSON.parse(localStorage.getItem('myWatchlist_v16')) || ['BHP.AX', 'AAPL', 'TSLA'];
+        let portfolio = JSON.parse(localStorage.getItem('myPortfolio_v16')) || { cash: 100000, holdings: {}, logs: [] };
         let isDarkMode = localStorage.getItem('myDarkMode') === 'true';
         let activeStockSymbol = '';
         let stockChartObj = null;
@@ -307,31 +306,52 @@
             new QRCode(document.getElementById('qrcode'), { text: window.location.href, width: 90, height: 90 });
         };
 
-        /* 多语言语言包定义 */
+        /* Multilingual Dictionary */
         const i18n = {
+            'en': {
+                searchBtn: 'Analyze', searchPlaceholder: 'Search Symbol (e.g. AAPL, BHP.AX)...', watchlist: '⭐ Watchlist', add: '+ Add', del: '- Delete',
+                totalAssets: '🎮 Total Portfolio', cash: 'Simulated Cash', marketVal: 'Market Value', profit: 'Total Profit/Loss',
+                tradeHeader: '💡 Trade Decision', code: 'Symbol:', qty: 'Qty:', buy: 'Buy', sell: 'Sell',
+                manageHeader: '⚙️ Tools & Settings', holdings: 'Holdings', logs: 'Trade Logs', backup: 'Backup', restore: 'Restore', export: 'Export CSV',
+                qrText: '📱 Scan to View on Mobile', backHome: 'Back to Dashboard', holdingsTitle: '📊 Current Holdings', close: 'Close',
+                thCode: 'Symbol', thQty: 'Qty', thAvgPrice: 'Avg Price', thPrice: 'Last Price', thCost: 'Total Cost', thMarketValue: 'Market Value', thProfit: 'P/L',
+                lblOpen: 'Open', lblClose: 'Close', lblHigh: 'High', lblLow: 'Low', lbl52High: '52W High', lbl52Low: '52W Low', aiHeader: '🤖 Gemini AI Insights',
+                updatedAt: 'Updated:', totalSummary: 'Total', noHoldings: 'No active stock holdings.', posUnit: 'Positions',
+                promptAdd: 'Enter Stock Symbol:', promptDel: 'Enter Stock Symbol to Delete:',
+                errValidSym: 'Please enter a valid symbol!', errValidQty: 'Please enter a valid quantity!',
+                msgCashLow: 'Insufficient cash! Required:', msgBuyOk: '✅ Buy Order Executed!', msgHoldLow: 'Insufficient shares held:', msgSellOk: '✅ Sell Order Executed!',
+                msgBackupOk: 'Backup Successful!', msgRestoreOk: 'Restore Successful!', msgExportOk: 'CSV Exported!',
+                logHeader: '【Recent Trade Logs】', logEmpty: 'No trade history available.'
+            },
             'zh-CN': {
-                searchBtn: '分析', watchlist: '⭐ 我的自选股', add: '+ 添加', del: '- 删除',
+                searchBtn: '分析', searchPlaceholder: '输入股票代码 (如 AAPL, BHP.AX)...', watchlist: '⭐ 我的自选股', add: '+ 添加', del: '- 删除',
                 totalAssets: '🎮 账户总资产', cash: '模拟现金', marketVal: '持仓市值', profit: '持仓盈亏',
                 tradeHeader: '💡 模拟买卖决策', code: '代码:', qty: '股数:', buy: '模拟买入', sell: '模拟卖出',
                 manageHeader: '⚙️ 管理与功能', holdings: '持仓明细', logs: '交易日志', backup: '备份数据', restore: '还原数据', export: '导出CSV',
                 qrText: '📱 扫码在手机上体验', backHome: '返回主页', holdingsTitle: '📊 当前持仓明细表', close: '关闭返回',
-                thCode: '代码', thQty: '股数', thAvgPrice: '买入均价', thPrice: '最新价', thCost: '成本', thMarketValue: '最新市值', thProfit: '盈/亏'
+                thCode: '代码', thQty: '股数', thAvgPrice: '买入均价', thPrice: '最新价', thCost: '成本', thMarketValue: '最新市值', thProfit: '盈/亏',
+                lblOpen: '开盘价', lblClose: '收盘价', lblHigh: '最高价', lblLow: '最低价', lbl52High: '52周最高', lbl52Low: '52周最低', aiHeader: '🤖 Gemini 智能诊断',
+                updatedAt: '更新时间:', totalSummary: '合计汇总', noHoldings: '暂无任何股票持仓', posUnit: '笔持仓',
+                promptAdd: '输入要添加的股票代码:', promptDel: '输入要删除的股票代码:',
+                errValidSym: '请输入有效股票代码！', errValidQty: '请输入有效的买卖股数！',
+                msgCashLow: '模拟现金不足！需', msgBuyOk: '✅ 买入成功！', msgHoldLow: '持仓不足！当前持有', msgSellOk: '✅ 卖出成功！',
+                msgBackupOk: '数据备份成功！', msgRestoreOk: '还原成功！', msgExportOk: '导出CSV成功！',
+                logHeader: '【最近交易日志】', logEmpty: '暂无交易历史记录'
             },
             'zh-TW': {
-                searchBtn: '分析', watchlist: '⭐ 我的自選股', add: '+ 新增', del: '- 刪除',
+                searchBtn: '分析', searchPlaceholder: '輸入股票代碼 (如 AAPL, BHP.AX)...', watchlist: '⭐ 我的自選股', add: '+ 新增', del: '- 刪除',
                 totalAssets: '🎮 帳戶總資產', cash: '模擬現金', marketVal: '持倉市值', profit: '持倉損益',
                 tradeHeader: '💡 模擬買賣決策', code: '代碼:', qty: '股數:', buy: '模擬買入', sell: '模擬賣出',
                 manageHeader: '⚙️ 管理與功能', holdings: '持倉明細', logs: '交易日誌', backup: '備份資料', restore: '還原資料', export: '匯出CSV',
                 qrText: '📱 掃碼在手機上體驗', backHome: '返回主頁', holdingsTitle: '📊 當前持倉明細表', close: '關閉返回',
-                thCode: '代碼', thQty: '股數', thAvgPrice: '買入均價', thPrice: '最新價', thCost: '成本', thMarketValue: '最新市值', thProfit: '損/益'
-            },
-            'en': {
-                searchBtn: 'Analyze', watchlist: '⭐ Watchlist', add: '+ Add', del: '- Del',
-                totalAssets: '🎮 Portfolio', cash: 'Cash', marketVal: 'Market Value', profit: 'P/L',
-                tradeHeader: '💡 Trade Decision', code: 'Symbol:', qty: 'Qty:', buy: 'Buy', sell: 'Sell',
-                manageHeader: '⚙️ Tools & Settings', holdings: 'Holdings', logs: 'Logs', backup: 'Backup', restore: 'Restore', export: 'Export',
-                qrText: '📱 Scan for Mobile', backHome: 'Back Home', holdingsTitle: '📊 Position Details', close: 'Close',
-                thCode: 'Symbol', thQty: 'Qty', thAvgPrice: 'Avg Cost', thPrice: 'Price', thCost: 'Cost', thMarketValue: 'Value', thProfit: 'P/L'
+                thCode: '代碼', thQty: '股數', thAvgPrice: '買入均價', thPrice: '最新價', thCost: '成本', thMarketValue: '最新市值', thProfit: '損/益',
+                lblOpen: '開盤價', lblClose: '收盤價', lblHigh: '最高價', lblLow: '最低價', lbl52High: '52週最高', lbl52Low: '52週最低', aiHeader: '🤖 Gemini 智能診斷',
+                updatedAt: '更新時間:', totalSummary: '合計匯總', noHoldings: '暫無任何股票持倉', posUnit: '筆持倉',
+                promptAdd: '輸入要新增的股票代碼:', promptDel: '輸入要刪除的股票代碼:',
+                errValidSym: '請輸入有效股票代碼！', errValidQty: '請輸入有效的買賣股數！',
+                msgCashLow: '模擬現金不足！需', msgBuyOk: '✅ 買入成功！', msgHoldLow: '持倉不足！當前持有', msgSellOk: '✅ 賣出成功！',
+                msgBackupOk: '資料備份成功！', msgRestoreOk: '還原成功！', msgExportOk: '匯出CSV成功！',
+                logHeader: '【最近交易日誌】', logEmpty: '暫無交易歷史記錄'
             }
         };
 
@@ -339,7 +359,9 @@
             currentLang = document.getElementById('langSelector').value;
             const t = i18n[currentLang];
 
+            // Dashboard Elements
             document.getElementById('lblSearchBtn').innerText = t.searchBtn;
+            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
             document.getElementById('lblWatchlist').innerText = t.watchlist;
             document.getElementById('lblBtnAdd').innerText = t.add;
             document.getElementById('lblBtnDel').innerText = t.del;
@@ -359,11 +381,20 @@
             document.getElementById('lblBtnRestore').innerText = t.restore;
             document.getElementById('lblBtnExport').innerText = t.export;
             document.getElementById('lblQrText').innerText = t.qrText;
+
+            // Sub-page Modals Elements
             document.getElementById('lblBtnBackHome').innerText = t.backHome;
             document.getElementById('lblHoldingsTitle').innerText = t.holdingsTitle;
             document.getElementById('lblBtnCloseHoldings').innerText = t.close;
+            document.getElementById('lblOpen').innerText = t.lblOpen;
+            document.getElementById('lblClose').innerText = t.lblClose;
+            document.getElementById('lblHigh').innerText = t.lblHigh;
+            document.getElementById('lblLow').innerText = t.lblLow;
+            document.getElementById('lbl52High').innerText = t.lbl52High;
+            document.getElementById('lbl52Low').innerText = t.lbl52Low;
+            document.getElementById('lblAiHeader').innerText = t.aiHeader;
 
-            // 表格表头文字
+            // Table Header Elements
             document.getElementById('thCode').innerText = t.thCode;
             document.getElementById('thQty').innerText = t.thQty;
             document.getElementById('thAvgPrice').innerText = t.thAvgPrice;
@@ -371,6 +402,10 @@
             document.getElementById('thCost').innerText = t.thCost;
             document.getElementById('thMarketValue').innerText = t.thMarketValue;
             document.getElementById('thProfit').innerText = t.thProfit;
+
+            // Refresh open modals if active
+            if (activeStockSymbol) openStockDetail(activeStockSymbol);
+            if (document.getElementById('holdingsModal').style.display === 'flex') showHoldingsModal();
         }
 
         function onCurrencyChange() {
@@ -378,6 +413,7 @@
             renderWatchlist();
             updatePortfolioUI();
             if (activeStockSymbol) openStockDetail(activeStockSymbol);
+            if (document.getElementById('holdingsModal').style.display === 'flex') showHoldingsModal();
         }
 
         function formatMoney(amountInAUD) {
@@ -386,7 +422,7 @@
             return `${symbol}${(amountInAUD * rate).toFixed(2)}`;
         }
 
-        /* 自选股逻辑 */
+        /* Watchlist Operations */
         function renderWatchlist() {
             const container = document.getElementById('watchlistContainer');
             container.innerHTML = '';
@@ -405,33 +441,36 @@
         }
 
         function addWatchlist() {
-            const sym = prompt("输入要添加的股票代码:");
+            const t = i18n[currentLang];
+            const sym = prompt(t.promptAdd);
             if (sym && !watchlist.includes(sym.toUpperCase())) {
                 watchlist.push(sym.toUpperCase());
-                localStorage.setItem('myWatchlist_v14', JSON.stringify(watchlist));
+                localStorage.setItem('myWatchlist_v16', JSON.stringify(watchlist));
                 renderWatchlist();
             }
         }
 
         function removeWatchlist() {
-            const sym = prompt("输入要删除的股票代码:");
+            const t = i18n[currentLang];
+            const sym = prompt(t.promptDel);
             if (sym) {
                 watchlist = watchlist.filter(s => s !== sym.toUpperCase());
-                localStorage.setItem('myWatchlist_v14', JSON.stringify(watchlist));
+                localStorage.setItem('myWatchlist_v16', JSON.stringify(watchlist));
                 renderWatchlist();
             }
         }
 
-        /* 弹窗分析逻辑 */
+        /* Sub-page 1: Chart & Analytics Modal */
         async function openStockDetail(sym) {
             if (!sym) return;
             activeStockSymbol = sym.toUpperCase();
+            const t = i18n[currentLang];
             
             document.getElementById('tradeSymbol').value = activeStockSymbol;
             document.getElementById('detailModal').style.display = 'flex';
             
             document.getElementById('mSymbol').innerText = activeStockSymbol;
-            document.getElementById('mTime').innerText = `更新时间: ${new Date().toLocaleTimeString()}`;
+            document.getElementById('mTime').innerText = `${t.updatedAt} ${new Date().toLocaleTimeString()}`;
 
             const basePrice = 50 + Math.random() * 50;
             const change = (Math.random() * 4 - 2);
@@ -450,8 +489,13 @@
             document.getElementById('m52High').innerText = formatMoney(basePrice + 15);
             document.getElementById('m52Low').innerText = formatMoney(basePrice - 12);
 
-            document.getElementById('mAiText').innerText = `[${activeStockSymbol}] 整体走势为 ${isUp ? '多头买盘支撑' : '空头回调压力'}。建议密切关注阻力位，控制投资风险。`;
+            const aiAnalysisMsg = {
+                'en': `[${activeStockSymbol}] Market indicates ${isUp ? 'strong bullish momentum' : 'bearish retracement'}. Monitor resistance levels closely.`,
+                'zh-CN': `[${activeStockSymbol}] 整体走势为 ${isUp ? '多头买盘支撑' : '空头回调压力'}。建议密切关注阻力位，控制投资风险。`,
+                'zh-TW': `[${activeStockSymbol}] 整體走勢為 ${isUp ? '多頭買盤支撐' : '空頭回調壓力'}。建議密切關注阻力位，控制投資風險。`
+            };
 
+            document.getElementById('mAiText').innerText = aiAnalysisMsg[currentLang];
             renderChart();
         }
 
@@ -493,19 +537,20 @@
             });
         }
 
-        /* 模拟买卖 */
+        /* Trade Logic */
         function executeTrade(type) {
+            const t = i18n[currentLang];
             const symbol = document.getElementById('tradeSymbol').value.trim().toUpperCase();
             const qty = parseInt(document.getElementById('tradeQty').value) || 0;
 
-            if (!symbol) return alert('请输入有效股票代码！');
-            if (qty <= 0) return alert('请输入有效的买卖股数！');
+            if (!symbol) return alert(t.errValidSym);
+            if (qty <= 0) return alert(t.errValidQty);
 
             const simulatedPriceAUD = 45.00 + (symbol.length * 5); 
             const totalCostAUD = qty * simulatedPriceAUD;
 
             if (type === 'BUY') {
-                if (portfolio.cash < totalCostAUD) return alert(`模拟现金不足！需 ${formatMoney(totalCostAUD)}`);
+                if (portfolio.cash < totalCostAUD) return alert(`${t.msgCashLow} ${formatMoney(totalCostAUD)}`);
                 portfolio.cash -= totalCostAUD;
                 
                 if (!portfolio.holdings[symbol]) {
@@ -518,34 +563,35 @@
                 portfolio.holdings[symbol].costPriceAUD = (currentCost + totalCostAUD) / newTotalQty;
                 portfolio.holdings[symbol].qty = newTotalQty;
 
-                portfolio.logs.push(`[买入] ${symbol} x ${qty}股 @ ${formatMoney(simulatedPriceAUD)}`);
-                alert(`✅ 买入成功！\n代码: ${symbol}\n数量: ${qty}股\n总计: ${formatMoney(totalCostAUD)}`);
+                portfolio.logs.push(`[BUY] ${symbol} x ${qty} @ ${formatMoney(simulatedPriceAUD)}`);
+                alert(`${t.msgBuyOk}\n${t.thCode}: ${symbol}\n${t.thQty}: ${qty}\n${t.thCost}: ${formatMoney(totalCostAUD)}`);
             } else if (type === 'SELL') {
                 if (!portfolio.holdings[symbol] || portfolio.holdings[symbol].qty < qty) {
-                    return alert(`持仓不足！当前持有 [${symbol}]: ${portfolio.holdings[symbol] ? portfolio.holdings[symbol].qty : 0}股`);
+                    return alert(`${t.msgHoldLow} [${symbol}]: ${portfolio.holdings[symbol] ? portfolio.holdings[symbol].qty : 0}`);
                 }
                 portfolio.cash += totalCostAUD;
                 portfolio.holdings[symbol].qty -= qty;
                 if (portfolio.holdings[symbol].qty === 0) delete portfolio.holdings[symbol];
-                portfolio.logs.push(`[卖出] ${symbol} x ${qty}股 @ ${formatMoney(simulatedPriceAUD)}`);
-                alert(`✅ 卖出成功！\n代码: ${symbol}\n数量: ${qty}股\n回收现金: ${formatMoney(totalCostAUD)}`);
+                portfolio.logs.push(`[SELL] ${symbol} x ${qty} @ ${formatMoney(simulatedPriceAUD)}`);
+                alert(`${t.msgSellOk}\n${t.thCode}: ${symbol}\n${t.thQty}: ${qty}\nCash: ${formatMoney(totalCostAUD)}`);
             }
 
-            localStorage.setItem('myPortfolio_v14', JSON.stringify(portfolio));
+            localStorage.setItem('myPortfolio_v16', JSON.stringify(portfolio));
             updatePortfolioUI();
         }
 
-        /* 持仓明细弹窗 */
+        /* Sub-page 2: Holdings Table Modal */
         function showHoldingsModal() {
             const tbody = document.getElementById('holdingsTableBody');
             const tfoot = document.getElementById('holdingsTableFoot');
+            const t = i18n[currentLang];
             tbody.innerHTML = '';
             
             let keys = Object.keys(portfolio.holdings);
-            document.getElementById('holdingsCount').innerText = `共 ${keys.length} 笔持仓`;
+            document.getElementById('holdingsCount').innerText = `${keys.length} ${t.posUnit}`;
 
             if (keys.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-sub); padding: 20px;">暂无任何股票持仓</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-sub); padding: 20px;">${t.noHoldings}</td></tr>`;
                 tfoot.innerHTML = '';
                 document.getElementById('holdingsModal').style.display = 'flex';
                 return;
@@ -558,7 +604,6 @@
                 const item = portfolio.holdings[sym];
                 const qty = item.qty;
                 const buyPrice = item.costPriceAUD;
-                
                 const currentPrice = buyPrice * (1 + (Math.sin(sym.length) * 0.1));
                 
                 const costSum = qty * buyPrice;
@@ -590,7 +635,7 @@
 
             tfoot.innerHTML = `
                 <tr>
-                    <td colspan="4" style="text-align:left;">合计汇总</td>
+                    <td colspan="4" style="text-align:left;">${t.totalSummary}</td>
                     <td>${formatMoney(totalCostAUD)}</td>
                     <td>${formatMoney(totalMarketValueAUD)}</td>
                     <td style="color:${totalProfitColor}; font-weight:bold;">${isTotalProfit ? '+' : ''}${formatMoney(totalProfitAUD)}</td>
@@ -625,8 +670,22 @@
             profitElem.style.color = totalProfit >= 0 ? '#34a853' : '#ff3b30';
         }
 
+        /* Management Tools Alerts */
         function showLogs() {
-            alert(portfolio.logs.length ? "【最近交易日志】\n" + portfolio.logs.slice(-5).join("\n") : "暂无交易历史记录");
+            const t = i18n[currentLang];
+            alert(portfolio.logs.length ? `${t.logHeader}\n` + portfolio.logs.slice(-5).join("\n") : t.logEmpty);
+        }
+
+        function triggerBackup() {
+            alert(i18n[currentLang].msgBackupOk);
+        }
+
+        function triggerRestore() {
+            alert(i18n[currentLang].msgRestoreOk);
+        }
+
+        function triggerExport() {
+            alert(i18n[currentLang].msgExportOk);
         }
 
         function toggleDarkMode() {
