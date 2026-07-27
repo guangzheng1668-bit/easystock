@@ -221,10 +221,9 @@
                 <select class="timeframe-select" id="timeframeSelect" onchange="updateChartTimeframe()">
                     <option value="1D">1D</option>
                     <option value="5D">5D</option>
-                    <option value="1M">1M</option>
+                    <option value="1M" selected>1M</option>
                     <option value="6M">6M</option>
                     <option value="1Y">1Y</option>
-                    <option value="5Y">5Y</option>
                 </select>
             </div>
 
@@ -288,13 +287,15 @@
     </div>
 
     <script>
+        const API_BASE_URL = 'http://127.0.0.1:5000/api';
+
         const currencyRates = { AUD: 1.0, USD: 0.66, HKD: 5.15, CNY: 4.75 };
         const currencySymbols = { AUD: '$', USD: '$', HKD: 'HK$', CNY: '¥' };
         
         let currentCurrency = 'AUD';
         let currentLang = 'en';
-        let watchlist = JSON.parse(localStorage.getItem('myWatchlist_v16')) || ['BHP.AX', 'AAPL', 'TSLA'];
-        let portfolio = JSON.parse(localStorage.getItem('myPortfolio_v16')) || { cash: 100000, holdings: {}, logs: [] };
+        let watchlist = JSON.parse(localStorage.getItem('myWatchlist_v17')) || ['BHP.AX', 'AAPL', 'TSLA'];
+        let portfolio = JSON.parse(localStorage.getItem('myPortfolio_v17')) || { cash: 100000, holdings: {}, logs: [] };
         let isDarkMode = localStorage.getItem('myDarkMode') === 'true';
         let activeStockSymbol = '';
         let stockChartObj = null;
@@ -306,7 +307,6 @@
             new QRCode(document.getElementById('qrcode'), { text: window.location.href, width: 90, height: 90 });
         };
 
-        /* Multilingual Dictionary */
         const i18n = {
             'en': {
                 searchBtn: 'Analyze', searchPlaceholder: 'Search Symbol (e.g. AAPL, BHP.AX)...', watchlist: '⭐ Watchlist', add: '+ Add', del: '- Delete',
@@ -359,7 +359,6 @@
             currentLang = document.getElementById('langSelector').value;
             const t = i18n[currentLang];
 
-            // Dashboard Elements
             document.getElementById('lblSearchBtn').innerText = t.searchBtn;
             document.getElementById('searchInput').placeholder = t.searchPlaceholder;
             document.getElementById('lblWatchlist').innerText = t.watchlist;
@@ -382,7 +381,6 @@
             document.getElementById('lblBtnExport').innerText = t.export;
             document.getElementById('lblQrText').innerText = t.qrText;
 
-            // Sub-page Modals Elements
             document.getElementById('lblBtnBackHome').innerText = t.backHome;
             document.getElementById('lblHoldingsTitle').innerText = t.holdingsTitle;
             document.getElementById('lblBtnCloseHoldings').innerText = t.close;
@@ -394,7 +392,6 @@
             document.getElementById('lbl52Low').innerText = t.lbl52Low;
             document.getElementById('lblAiHeader').innerText = t.aiHeader;
 
-            // Table Header Elements
             document.getElementById('thCode').innerText = t.thCode;
             document.getElementById('thQty').innerText = t.thQty;
             document.getElementById('thAvgPrice').innerText = t.thAvgPrice;
@@ -403,9 +400,7 @@
             document.getElementById('thMarketValue').innerText = t.thMarketValue;
             document.getElementById('thProfit').innerText = t.thProfit;
 
-            // Refresh open modals if active
             if (activeStockSymbol) openStockDetail(activeStockSymbol);
-            if (document.getElementById('holdingsModal').style.display === 'flex') showHoldingsModal();
         }
 
         function onCurrencyChange() {
@@ -413,7 +408,6 @@
             renderWatchlist();
             updatePortfolioUI();
             if (activeStockSymbol) openStockDetail(activeStockSymbol);
-            if (document.getElementById('holdingsModal').style.display === 'flex') showHoldingsModal();
         }
 
         function formatMoney(amountInAUD) {
@@ -422,22 +416,30 @@
             return `${symbol}${(amountInAUD * rate).toFixed(2)}`;
         }
 
-        /* Watchlist Operations */
-        function renderWatchlist() {
+        /* 渲染自选股列表 (调用真实 API) */
+        async function renderWatchlist() {
             const container = document.getElementById('watchlistContainer');
             container.innerHTML = '';
-            watchlist.forEach(sym => {
+            for (let sym of watchlist) {
                 const item = document.createElement('div');
                 item.className = 'watch-tag';
                 item.onclick = () => openStockDetail(sym);
                 
-                const mockPrice = (40 + Math.random() * 20);
-                item.innerHTML = `
-                    <div class="watch-tag-sym">${sym}</div>
-                    <div class="watch-tag-price" style="color:var(--up-color)">${formatMoney(mockPrice)}</div>
-                `;
+                try {
+                    const res = await fetch(`${API_BASE_URL}/stock/${sym}`);
+                    const json = await res.json();
+                    if (json.status === 'success') {
+                        const price = json.data.price;
+                        item.innerHTML = `
+                            <div class="watch-tag-sym">${sym}</div>
+                            <div class="watch-tag-price" style="color:var(--up-color)">${formatMoney(price)}</div>
+                        `;
+                    }
+                } catch(e) {
+                    item.innerHTML = `<div class="watch-tag-sym">${sym}</div><div class="watch-tag-price">--</div>`;
+                }
                 container.appendChild(item);
-            });
+            }
         }
 
         function addWatchlist() {
@@ -445,7 +447,7 @@
             const sym = prompt(t.promptAdd);
             if (sym && !watchlist.includes(sym.toUpperCase())) {
                 watchlist.push(sym.toUpperCase());
-                localStorage.setItem('myWatchlist_v16', JSON.stringify(watchlist));
+                localStorage.setItem('myWatchlist_v17', JSON.stringify(watchlist));
                 renderWatchlist();
             }
         }
@@ -455,12 +457,12 @@
             const sym = prompt(t.promptDel);
             if (sym) {
                 watchlist = watchlist.filter(s => s !== sym.toUpperCase());
-                localStorage.setItem('myWatchlist_v16', JSON.stringify(watchlist));
+                localStorage.setItem('myWatchlist_v17', JSON.stringify(watchlist));
                 renderWatchlist();
             }
         }
 
-        /* Sub-page 1: Chart & Analytics Modal */
+        /* 核心 Modal: 获取真实股票行情数据 */
         async function openStockDetail(sym) {
             if (!sym) return;
             activeStockSymbol = sym.toUpperCase();
@@ -468,35 +470,44 @@
             
             document.getElementById('tradeSymbol').value = activeStockSymbol;
             document.getElementById('detailModal').style.display = 'flex';
-            
             document.getElementById('mSymbol').innerText = activeStockSymbol;
-            document.getElementById('mTime').innerText = `${t.updatedAt} ${new Date().toLocaleTimeString()}`;
+            document.getElementById('mTime').innerText = `${t.updatedAt} Loading...`;
 
-            const basePrice = 50 + Math.random() * 50;
-            const change = (Math.random() * 4 - 2);
-            const changePct = (change / basePrice) * 100;
-            const isUp = change >= 0;
+            try {
+                const res = await fetch(`${API_BASE_URL}/stock/${activeStockSymbol}`);
+                const json = await res.json();
 
-            const changeElem = document.getElementById('mChange');
-            changeElem.innerText = `${isUp ? '+' : ''}${formatMoney(change)} (${isUp ? '+' : ''}${changePct.toFixed(2)}%)`;
-            changeElem.style.color = isUp ? 'var(--up-color)' : 'var(--down-color)';
+                if (json.status === 'success') {
+                    const d = json.data;
+                    const isUp = d.change >= 0;
 
-            document.getElementById('mPriceBox').innerText = formatMoney(basePrice);
-            document.getElementById('mOpen').innerText = formatMoney(basePrice - 0.5);
-            document.getElementById('mClose').innerText = formatMoney(basePrice);
-            document.getElementById('mHigh').innerText = formatMoney(basePrice + 1.2);
-            document.getElementById('mLow').innerText = formatMoney(basePrice - 1.0);
-            document.getElementById('m52High').innerText = formatMoney(basePrice + 15);
-            document.getElementById('m52Low').innerText = formatMoney(basePrice - 12);
+                    document.getElementById('mPriceBox').innerText = formatMoney(d.price);
+                    const changeElem = document.getElementById('mChange');
+                    changeElem.innerText = `${isUp ? '+' : ''}${formatMoney(d.change)} (${isUp ? '+' : ''}${d.changePct}%)`;
+                    changeElem.style.color = isUp ? 'var(--up-color)' : 'var(--down-color)';
 
-            const aiAnalysisMsg = {
-                'en': `[${activeStockSymbol}] Market indicates ${isUp ? 'strong bullish momentum' : 'bearish retracement'}. Monitor resistance levels closely.`,
-                'zh-CN': `[${activeStockSymbol}] 整体走势为 ${isUp ? '多头买盘支撑' : '空头回调压力'}。建议密切关注阻力位，控制投资风险。`,
-                'zh-TW': `[${activeStockSymbol}] 整體走勢為 ${isUp ? '多頭買盤支撐' : '空頭回調壓力'}。建議密切關注阻力位，控制投資風險。`
-            };
+                    document.getElementById('mTime').innerText = `${t.updatedAt} ${new Date().toLocaleTimeString()}`;
+                    document.getElementById('mOpen').innerText = formatMoney(d.open);
+                    document.getElementById('mClose').innerText = formatMoney(d.close);
+                    document.getElementById('mHigh').innerText = formatMoney(d.high);
+                    document.getElementById('mLow').innerText = formatMoney(d.low);
+                    document.getElementById('m52High').innerText = formatMoney(d.fiftyTwoWeekHigh);
+                    document.getElementById('m52Low').innerText = formatMoney(d.fiftyTwoWeekLow);
 
-            document.getElementById('mAiText').innerText = aiAnalysisMsg[currentLang];
-            renderChart();
+                    const aiAnalysisMsg = {
+                        'en': `[${activeStockSymbol}] Market trading at ${formatMoney(d.price)}. ${isUp ? 'Bullish momentum detected.' : 'Experiencing short-term pullbacks.'}`,
+                        'zh-CN': `[${activeStockSymbol}] 最新市场报价 ${formatMoney(d.price)}。技术面走势呈 ${isUp ? '多头偏强格局' : '空头承压整理'}。`,
+                        'zh-TW': `[${activeStockSymbol}] 最新市場報價 ${formatMoney(d.price)}。技術面走勢呈 ${isUp ? '多頭偏強格局' : '空頭承壓整理'}。`
+                    };
+                    document.getElementById('mAiText').innerText = aiAnalysisMsg[currentLang];
+
+                    renderChart();
+                } else {
+                    alert("Stock not found or API error!");
+                }
+            } catch (err) {
+                console.error("API error:", err);
+            }
         }
 
         function closeStockDetail() {
@@ -507,38 +518,48 @@
             renderChart();
         }
 
-        function renderChart() {
+        /* 渲染真实历史 K 线图 */
+        async function renderChart() {
             const ctx = document.getElementById('stockChart').getContext('2d');
             if (stockChartObj) stockChartObj.destroy();
 
+            const tfMap = { '1D': '1d', '5D': '5d', '1M': '1mo', '6M': '6mo', '1Y': '1y' };
             const tf = document.getElementById('timeframeSelect').value;
-            const pointsCount = tf === '1D' ? 10 : tf === '5D' ? 20 : 30;
-            
-            const labels = Array.from({length: pointsCount}, (_, i) => `${i + 1}`);
-            const dataPoints = Array.from({length: pointsCount}, () => (40 + Math.random() * 20));
+            const period = tfMap[tf] || '1mo';
 
-            stockChartObj = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: `${activeStockSymbol} (${tf})`,
-                        data: dataPoints,
-                        borderColor: '#1a73e8',
-                        tension: 0.3,
-                        fill: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } }
+            try {
+                const res = await fetch(`${API_BASE_URL}/stock/${activeStockSymbol}/history?period=${period}`);
+                const json = await res.json();
+
+                if (json.status === 'success') {
+                    stockChartObj = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: json.labels,
+                            datasets: [{
+                                label: `${activeStockSymbol} (${tf})`,
+                                data: json.prices,
+                                borderColor: '#1a73e8',
+                                backgroundColor: 'rgba(26, 115, 232, 0.1)',
+                                tension: 0.2,
+                                fill: true,
+                                pointRadius: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } }
+                        }
+                    });
                 }
-            });
+            } catch (e) {
+                console.error("Failed to fetch history chart:", e);
+            }
         }
 
-        /* Trade Logic */
-        function executeTrade(type) {
+        /* 交易模拟逻辑 */
+        async function executeTrade(type) {
             const t = i18n[currentLang];
             const symbol = document.getElementById('tradeSymbol').value.trim().toUpperCase();
             const qty = parseInt(document.getElementById('tradeQty').value) || 0;
@@ -546,42 +567,49 @@
             if (!symbol) return alert(t.errValidSym);
             if (qty <= 0) return alert(t.errValidQty);
 
-            const simulatedPriceAUD = 45.00 + (symbol.length * 5); 
-            const totalCostAUD = qty * simulatedPriceAUD;
+            try {
+                const res = await fetch(`${API_BASE_URL}/stock/${symbol}`);
+                const json = await res.json();
+                if (json.status !== 'success') return alert('Invalid stock symbol!');
 
-            if (type === 'BUY') {
-                if (portfolio.cash < totalCostAUD) return alert(`${t.msgCashLow} ${formatMoney(totalCostAUD)}`);
-                portfolio.cash -= totalCostAUD;
-                
-                if (!portfolio.holdings[symbol]) {
-                    portfolio.holdings[symbol] = { qty: 0, costPriceAUD: simulatedPriceAUD };
-                }
-                
-                const currentQty = portfolio.holdings[symbol].qty;
-                const currentCost = currentQty * portfolio.holdings[symbol].costPriceAUD;
-                const newTotalQty = currentQty + qty;
-                portfolio.holdings[symbol].costPriceAUD = (currentCost + totalCostAUD) / newTotalQty;
-                portfolio.holdings[symbol].qty = newTotalQty;
+                const realPrice = json.data.price;
+                const totalCost = qty * realPrice;
 
-                portfolio.logs.push(`[BUY] ${symbol} x ${qty} @ ${formatMoney(simulatedPriceAUD)}`);
-                alert(`${t.msgBuyOk}\n${t.thCode}: ${symbol}\n${t.thQty}: ${qty}\n${t.thCost}: ${formatMoney(totalCostAUD)}`);
-            } else if (type === 'SELL') {
-                if (!portfolio.holdings[symbol] || portfolio.holdings[symbol].qty < qty) {
-                    return alert(`${t.msgHoldLow} [${symbol}]: ${portfolio.holdings[symbol] ? portfolio.holdings[symbol].qty : 0}`);
+                if (type === 'BUY') {
+                    if (portfolio.cash < totalCost) return alert(`${t.msgCashLow} ${formatMoney(totalCost)}`);
+                    portfolio.cash -= totalCost;
+                    
+                    if (!portfolio.holdings[symbol]) {
+                        portfolio.holdings[symbol] = { qty: 0, costPriceAUD: realPrice };
+                    }
+                    
+                    const currentQty = portfolio.holdings[symbol].qty;
+                    const currentCost = currentQty * portfolio.holdings[symbol].costPriceAUD;
+                    const newTotalQty = currentQty + qty;
+                    portfolio.holdings[symbol].costPriceAUD = (currentCost + totalCost) / newTotalQty;
+                    portfolio.holdings[symbol].qty = newTotalQty;
+
+                    portfolio.logs.push(`[BUY] ${symbol} x ${qty} @ ${formatMoney(realPrice)}`);
+                    alert(`${t.msgBuyOk}\n${t.thCode}: ${symbol}\n${t.thQty}: ${qty}\n${t.thCost}: ${formatMoney(totalCost)}`);
+                } else if (type === 'SELL') {
+                    if (!portfolio.holdings[symbol] || portfolio.holdings[symbol].qty < qty) {
+                        return alert(`${t.msgHoldLow} [${symbol}]: ${portfolio.holdings[symbol] ? portfolio.holdings[symbol].qty : 0}`);
+                    }
+                    portfolio.cash += totalCost;
+                    portfolio.holdings[symbol].qty -= qty;
+                    if (portfolio.holdings[symbol].qty === 0) delete portfolio.holdings[symbol];
+                    portfolio.logs.push(`[SELL] ${symbol} x ${qty} @ ${formatMoney(realPrice)}`);
+                    alert(`${t.msgSellOk}\n${t.thCode}: ${symbol}\n${t.thQty}: ${qty}\nCash: ${formatMoney(totalCost)}`);
                 }
-                portfolio.cash += totalCostAUD;
-                portfolio.holdings[symbol].qty -= qty;
-                if (portfolio.holdings[symbol].qty === 0) delete portfolio.holdings[symbol];
-                portfolio.logs.push(`[SELL] ${symbol} x ${qty} @ ${formatMoney(simulatedPriceAUD)}`);
-                alert(`${t.msgSellOk}\n${t.thCode}: ${symbol}\n${t.thQty}: ${qty}\nCash: ${formatMoney(totalCostAUD)}`);
+
+                localStorage.setItem('myPortfolio_v17', JSON.stringify(portfolio));
+                updatePortfolioUI();
+            } catch(e) {
+                alert("Trade failed, could not reach API backend.");
             }
-
-            localStorage.setItem('myPortfolio_v16', JSON.stringify(portfolio));
-            updatePortfolioUI();
         }
 
-        /* Sub-page 2: Holdings Table Modal */
-        function showHoldingsModal() {
+        async function showHoldingsModal() {
             const tbody = document.getElementById('holdingsTableBody');
             const tfoot = document.getElementById('holdingsTableFoot');
             const t = i18n[currentLang];
@@ -600,12 +628,18 @@
             let totalCostAUD = 0;
             let totalMarketValueAUD = 0;
 
-            keys.forEach(sym => {
+            for (let sym of keys) {
                 const item = portfolio.holdings[sym];
                 const qty = item.qty;
                 const buyPrice = item.costPriceAUD;
-                const currentPrice = buyPrice * (1 + (Math.sin(sym.length) * 0.1));
-                
+                let currentPrice = buyPrice;
+
+                try {
+                    const res = await fetch(`${API_BASE_URL}/stock/${sym}`);
+                    const json = await res.json();
+                    if (json.status === 'success') currentPrice = json.data.price;
+                } catch(e){}
+
                 const costSum = qty * buyPrice;
                 const marketValSum = qty * currentPrice;
                 const profitSum = marketValSum - costSum;
@@ -627,7 +661,7 @@
                     <td style="color:${profitColor}; font-weight:bold;">${isProfit ? '+' : ''}${formatMoney(profitSum)}</td>
                 `;
                 tbody.appendChild(tr);
-            });
+            }
 
             const totalProfitAUD = totalMarketValueAUD - totalCostAUD;
             const isTotalProfit = totalProfitAUD >= 0;
@@ -649,14 +683,22 @@
             document.getElementById('holdingsModal').style.display = 'none';
         }
 
-        function updatePortfolioUI() {
+        async function updatePortfolioUI() {
             document.getElementById('dispCash').innerText = formatMoney(portfolio.cash);
             let marketVal = 0;
             let totalCost = 0;
+
             for (let sym in portfolio.holdings) {
                 let qty = portfolio.holdings[sym].qty;
                 let buyPrice = portfolio.holdings[sym].costPriceAUD;
-                let currentPrice = buyPrice * (1 + (Math.sin(sym.length) * 0.1));
+                let currentPrice = buyPrice;
+
+                try {
+                    const res = await fetch(`${API_BASE_URL}/stock/${sym}`);
+                    const json = await res.json();
+                    if (json.status === 'success') currentPrice = json.data.price;
+                } catch(e){}
+
                 marketVal += qty * currentPrice;
                 totalCost += qty * buyPrice;
             }
@@ -670,23 +712,14 @@
             profitElem.style.color = totalProfit >= 0 ? '#34a853' : '#ff3b30';
         }
 
-        /* Management Tools Alerts */
         function showLogs() {
             const t = i18n[currentLang];
             alert(portfolio.logs.length ? `${t.logHeader}\n` + portfolio.logs.slice(-5).join("\n") : t.logEmpty);
         }
 
-        function triggerBackup() {
-            alert(i18n[currentLang].msgBackupOk);
-        }
-
-        function triggerRestore() {
-            alert(i18n[currentLang].msgRestoreOk);
-        }
-
-        function triggerExport() {
-            alert(i18n[currentLang].msgExportOk);
-        }
+        function triggerBackup() { alert(i18n[currentLang].msgBackupOk); }
+        function triggerRestore() { alert(i18n[currentLang].msgRestoreOk); }
+        function triggerExport() { alert(i18n[currentLang].msgExportOk); }
 
         function toggleDarkMode() {
             isDarkMode = !isDarkMode;
