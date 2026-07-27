@@ -1,12 +1,10 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, jsonify, request
+from flask_cors import CORS
 import yfinance as yf
-import json
-import os
-from datetime import datetime
 
 app = Flask(__name__)
 # 允许跨域请求，方便本地 HTML 文件直接调用 API
-
+CORS(app)
 
 @app.route('/api/stock/<symbol>', methods=['GET'])
 def get_stock_data(symbol):
